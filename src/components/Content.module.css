@@ -1,0 +1,12 @@
+.container {
+    padding: 20px;
+    background-color: white;
+
+    flex: 1;
+    overflow-y: auto;
+}
+
+.title {
+    color: #333;
+    margin-bottom: 10px;
+}

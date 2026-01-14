@@ -1,0 +1,23 @@
+.sidebar {
+    width: 250px;
+    
+    background-color: lightgray;
+    border-right: 1px solid #ddd;
+    
+    padding: 20px;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.menuItem {
+    padding: 10px;
+
+    cursor: pointer;
+    color: #555;
+}
+
+.menuItem:hover {
+    background-color: #e0e0e0;
+    color: #000;
+}

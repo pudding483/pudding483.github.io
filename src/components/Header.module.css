@@ -1,0 +1,56 @@
+.header {
+    width: 100%;
+    height: 10%;
+    padding: 0 40px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    /* make sure at the top*/
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.leftSection {
+    flex:1 ;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.leftSection .logo {
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 1.2rem;
+    font-weight: bold;
+    
+    color: blue;
+
+    margin: 0;
+    white-space: nowrap;
+}
+
+.centerSection {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+
+}
+
+.centerSection .navList {
+    padding: 0;
+    margin: 0;
+
+    gap: 20px;
+
+    display: flex;
+    list-style: none;
+}
+
+.rightSection {
+    gap: 20px;
+
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+}

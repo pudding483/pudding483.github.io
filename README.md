@@ -16,7 +16,7 @@ Directory Structure :
 
 App (外層)
  ├── Header (元件)
- └── MainLayout (或是叫 BodyWrapper，這是用來包住下面兩個的 div)
+ └── BodyWrapper
       ├── Sidebar (元件)
       └── Content (元件)
  └── Footer
