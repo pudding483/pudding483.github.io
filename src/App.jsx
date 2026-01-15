@@ -7,14 +7,14 @@ import './App.css';
 
 function App() { /* Ties all component together */
   return (
-    <>
+    <div className="appContainer">
       <Header/>
 
       <BodyWrapper />
       {/* <Sidebar> + <Content> */}
       
       <Footer/>
-    </>
+    </div>
   );
 }
 

@@ -14,9 +14,11 @@ If you are developing a production application, we recommend using TypeScript wi
 
 Directory Structure :
 
+```text
 App (外層)
  ├── Header (元件)
  └── BodyWrapper
       ├── Sidebar (元件)
       └── Content (元件)
  └── Footer
+ ```

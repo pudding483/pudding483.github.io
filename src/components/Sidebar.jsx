@@ -3,9 +3,10 @@ import styles from './Sidebar.module.css'
 function Sidebar(){
     return (
         <div className={styles.sidebar}>
-            <div className={styles.menuItem}>儀表板</div>
-            <div className={styles.menuItem}>使用者管理</div>
-            <div className={styles.menuItem}>系統設定</div>
+            {/* 這裡可以放大頭貼/文章類別/標籤 */}
+            <div className={styles.menuItem}>Test1</div>
+            <div className={styles.menuItem}>Test2</div>
+            <div className={styles.menuItem}>Test3</div>
         </div>
     );
 }

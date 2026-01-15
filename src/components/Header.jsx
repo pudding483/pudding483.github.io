@@ -21,8 +21,8 @@ function Header(){
             
             {/* {right section} */}
             <div className={styles.rightSection}>
-                <p>Music</p>
-                <p>Dark/Light</p>
+                <span className={styles.actionItem}>Music</span>
+                <span className={styles.actionItem}>Dark/Light</span>
             </div>
         </header>
     );
