@@ -1,6 +1,6 @@
-import Header from './components/Header.jsx';
+import Header from './components/Header/Header.jsx';
 import BodyWrapper from './layouts/BodyWrapper/BodyWrapper.jsx';
-import Footer from './components/Footer.jsx';
+import Footer from './components/Footer/Footer.jsx';
 
 import './App.css';
 

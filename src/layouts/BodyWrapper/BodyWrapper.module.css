@@ -2,9 +2,19 @@
     width: 80%;
 
     margin: 0 auto;
-    gap: 2%;
+    gap: 20px;
     
     flex: 1;
     display: flex;
     position: relative;
+}
+
+@media (max-width: 768px) {
+    .wrapper {
+        width: 95%;
+
+        gap: 15px;
+
+        flex-direction: column;
+    }
 }

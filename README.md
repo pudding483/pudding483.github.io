@@ -12,13 +12,17 @@ Currently, two official plugins are available:
 If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
 
 
-Directory Structure :
+components directory structure :
 
 ```text
-App (外層)
- ├── Header (元件)
- └── BodyWrapper
-      ├── Sidebar (元件)
-      └── Content (元件)
+components
+ ├── Header
+ ├── Sidebar
+ ├── Content
  └── Footer
+
+ layouts
+  └── BodyWrapper
+      ├── Sidebar
+      └── Content
  ```

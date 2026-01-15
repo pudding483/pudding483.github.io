@@ -1,6 +1,6 @@
 import styles from './BodyWrapper.module.css';
-import Sidebar from '../../components/Sidebar.jsx';
-import Content from '../../components/Content.jsx';
+import Sidebar from '../../components/Sidebar/Sidebar.jsx';
+import Content from '../../components/Content/Content.jsx';
 
 function BodyWrapper() {
     return (
