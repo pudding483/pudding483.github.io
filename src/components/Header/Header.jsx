@@ -7,13 +7,13 @@ function Header(){
             {/* {left section} */}
             <div className={styles.leftSection}>
                 <h1 className={styles.logo}>483's Blog</h1>
-
             </div>
             
             {/* {center section} */}
             <nav className={styles.centerSection}>
                 <ul className={styles.navList}>
                     <li><a href="#">Home</a></li>
+                    <li><a href="#">Archive</a></li>
                     <li><a href="#">About</a></li>
                     <li><a href="#">Contact</a></li>
                 </ul>
