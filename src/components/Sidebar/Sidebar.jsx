@@ -15,7 +15,7 @@ function Sidebar(){
 
     return (
         <aside className={styles.sidebar}>
-            {/* 這裡可以放大頭貼/文章類別/標籤 */}
+            {/* 放大頭貼/文章類別/標籤 */}
             <ProfileSection />
 
             <hr className={styles.divider} />

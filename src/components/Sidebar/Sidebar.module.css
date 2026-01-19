@@ -58,15 +58,33 @@
     
     border: 4px solid rgba(255, 255, 255, 0.7);
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+
+    position: relative;
 }
 
 .avatar {
-    width: 100%;
+    /* width: 100%;
     height: 100%;
     
     object-fit: cover;
+    object-position: left center;
+    object-position: 20% center; */
+    /* 用絕對位置替換上面的方法，上面的方法容易導致圖片失真 */
+
+
+    height: 125%; 
+    width: auto;
+    /* 寬度自動，保持比例不變形 */
+
+    position: absolute;
     
-    display: block; 
+    /* 平移對焦
+       利用 left 和 top 來移動這張縮小後的圖
+       因為頭在左邊，所以要往左移 (負數)。*/
+    left: -35%;
+    top: -25%; 
+    
+    display: block;
 }
 
 /* ------------ category ------------ */
@@ -87,13 +105,12 @@
     border-radius: 8px;
     cursor: pointer;
     
-    /* 預設文字顏色 (深紫或深灰) */
     color: rgba(255, 255, 255, 0.9); 
     transition: all 0.2s ease;
 }
 
 .list .listItem:hover {
-    /* Hover 時變成半透明白色背景 */
+    /* Hover 時變成灰色背景 */
     background-color: rgba(255, 255, 255, 0.2);
     color: #fff;
     padding-left: 18px; /* 做一個微小的位移動畫 */
