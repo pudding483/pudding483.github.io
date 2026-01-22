@@ -1,8 +1,9 @@
-import styles from './Sidebar.module.css'
+import { Link } from 'react-router-dom';
+
+import styles from './Sidebar.module.css';
 import avatarImg from '../../assets/playing_the_piano.jpg';
 
-function Sidebar(){
-
+function Sidebar() {
     // Test case
     const categories = [
         { id: 1, name: 'Frontend', count: 12 },
@@ -29,7 +30,7 @@ function Sidebar(){
     );
 }
 
-function ProfileSection(){
+function ProfileSection() {
     return (
         <div className={styles.profileSection}>
             <div className={styles.avatarWrapper}>
@@ -38,7 +39,7 @@ function ProfileSection(){
             <h3 className={styles.name}>沈柏安</h3>
             <p className={styles.bio}>資安工程師 | 象棋愛好者</p>
         </div>
-    )
+    );
 }
 
 function CategorySection({ list }) {
@@ -48,7 +49,7 @@ function CategorySection({ list }) {
             <ul className={styles.list}>
                 {list.map((item) => (
                     <li key={item.id} className={styles.listItem}>
-                        {item.name} 
+                        {item.name}
                         <span className={styles.count}>({item.count})</span>
                     </li>
                 ))}

@@ -5,6 +5,12 @@ import BodyWrapper from './layouts/BodyWrapper/BodyWrapper.jsx';
 import Footer from './components/Footer/Footer.jsx';
 import './App.css';
 
+// 代辦，這四個 component 尚未實作
+const Home = () => <h2>這是首頁內容</h2>;
+const Archive = () => <h2>這是文章歸檔區</h2>;
+const About = () => <h2>關於我</h2>;
+const Contact = () => <h2>聯繫我</h2>;
+
 function App() {
     /* Ties all component together */
     return (
@@ -12,15 +18,15 @@ function App() {
             <Header />
 
             <Routes>
-                <Route path="/" element={<BodyWrapper></BodyWrapper>}>
-                    <Route index element={<Home></Home>} />
-                    <Route path="archive" element={<Archive></Archive>} />
-                    <Route path="about" element={<About></About>} />
+                <Route path="/" element={<BodyWrapper />}>
+                    <Route index element={<Home />} />
+                    <Route path="archive" element={<Archive />} />
+                    <Route path="about" element={<About />} />
+                    <Route path="contact" element={<Contact />} />
                 </Route>
             </Routes>
 
-            <BodyWrapper />
-            {/* <Sidebar> + <Content> */}
+            {/* <BodyWrapper /> */}
 
             <Footer />
         </div>

@@ -1,11 +1,9 @@
-.header {
+.headerWrapper {
     width: 100%;
     height: 10%;
-    padding: 20px 40px;
 
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    padding: 0px 20px 20px 20px;
+    /* 上 右 下 左 */
 
     /* make sure at the top*/
     position: sticky;
@@ -13,8 +11,27 @@
     z-index: 100;
 }
 
-.leftSection {
-    flex:1 ;
+.headerWrapper .headerSurface {
+    width: 100%;
+    height: 100%;
+
+    background-color: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+
+    border: solid rgba(255, 255, 255, 0.5);
+    border-radius: 0px 0px 15px 15px;
+    /* 左上 右上 右下 左下 */
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 20px 40px;
+}
+
+.headerSurface .leftSection {
+    flex: 1;
     display: flex;
     justify-content: flex-start;
 }
@@ -23,18 +40,17 @@
     font-family: 'Noto Sans TC', sans-serif;
     font-size: 1.5rem;
     font-weight: bold;
-    
+
     color: darkviolet;
 
     margin: 0;
     white-space: nowrap;
 }
 
-.centerSection {
+.headerSurface .centerSection {
     flex: 1;
     display: flex;
     justify-content: center;
-
 }
 
 .centerSection .navList {
@@ -49,7 +65,7 @@
     list-style: none;
 }
 
-.rightSection {
+.headerSurface .rightSection {
     gap: 20px;
 
     flex: 1;
