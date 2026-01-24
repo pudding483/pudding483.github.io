@@ -1,14 +1,14 @@
 .container {
-    padding: 20px;
+	padding: 20px;
 
-    background-color: violet;
-    border-radius: 15px;
+	background-color: violet;
+	border-radius: 15px;
 
-    flex: 5;
-    overflow-y: auto;
+	flex: 5;
+	overflow-y: auto;
 }
 
 .title {
-    color: #333;
-    margin-bottom: 10px;
+	color: #333;
+	margin-bottom: 10px;
 }
