@@ -54,15 +54,56 @@
 }
 
 .centerSection .navList {
-	font-size: 1.2rem;
-
 	padding: 0;
 	margin: 0;
 
-	gap: 20px;
+	gap: 40px;
+
+	font-size: 1rem;
 
 	display: flex;
+
 	list-style: none;
+}
+
+.navList a {
+	text-decoration: none; /* 拿掉預設底線 */
+	color: #333;
+	font-weight: bold;
+
+	/* 設 relative，配合下方線條使用 absolute */
+	position: relative;
+	padding-bottom: 5px;
+}
+
+/* 用假物件時做屬標懸停出底線的效果 */
+.navList a::after {
+	content: "";
+
+	width: 0; /* 起始寬度為 0 (不可視)*/
+	height: 2px;
+	bottom: 0;
+	left: 0;
+
+	background-color: darkviolet;
+
+	position: absolute;
+
+	transition: width 0.3s ease;
+
+	/* equals to
+	transition-property: width;
+	transition-duration: 0.3s;
+	transition-timing-function: ease;
+	*/
+}
+
+.navList a:hover {
+	color: darkviolet;
+}
+
+.navList a:hover::after {
+	width: 100%;
 }
 
 .headerSurface .rightSection {
@@ -74,7 +115,9 @@
 }
 
 .rightSection .actionItem {
-	font-size: 0.9 rem;
+	font-size: 1rem;
+	font-weight: bold;
+
 	color: slateblue;
 
 	cursor: pointer;

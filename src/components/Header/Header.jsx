@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+// 在網頁上會被渲染成標準的 HTML <a> 標籤，對於訪問過的標籤字體會有別的顏色
 
 import styles from "./Header.module.css";
 
