@@ -18,8 +18,9 @@ function Archive() {
 			<h2 className={styles.pageTitle}>文章歸檔</h2>
 
 			<div className={styles.listGrid}>
-				{/* 用 map 跑迴圈，自動把上面的資料變成卡片 */}
+				{/* 用 map 遍歷 blogPosts 的資料變成卡片 */}
 				{blogPosts.map((post) => (
+					// 用 blogPosts 裡面的 key 對應
 					<Link to={post.path} key={post.id} className={styles.postCard}>
 						<div className={styles.cardHeader}>
 							<span className={styles.date}>{post.date}</span>

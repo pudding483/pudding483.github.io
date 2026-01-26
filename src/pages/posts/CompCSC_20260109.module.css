@@ -1,0 +1,162 @@
+.articleWrapper {
+	width: 100%;
+	padding: 20px;
+	box-sizing: border-box;
+
+	display: flex;
+	justify-content: center;
+}
+
+.articleWrapper .paperCard {
+	width: 100%;
+	max-width: 900px; /* 文章最佳閱讀寬度，太寬很難讀 */
+	background-color: rgba(255, 255, 255, 0.95); /* 白色，帶一點點透度 */
+
+	border-radius: 20px;
+	box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1); /* 柔和的陰影，讓卡片浮起來 */
+
+	padding: 50px; /* 卡片內部的留白 */
+	color: #333;
+}
+
+.paperCard .postHeader {
+	display: flex;
+	flex-direction: column; /* 讓標題和日期垂直排列 */
+	align-items: flex-start; /* 內容靠左對齊 */
+	gap: 15px; /* 標題 (h1) 和日期資訊 (metaInfo) 之間的間距 */
+
+	width: 100%;
+	margin-bottom: 10px; /* 整個 Header 跟下方分隔線 (hr) 的距離 */
+}
+
+/* --- Header 區域 --- */
+.postHeader .title {
+	margin-bottom: 15px;
+
+	font-size: 2.2rem;
+
+	color: #2c3e50;
+	line-height: 1.2;
+}
+
+.postHeader .metaInfo {
+	gap: 20px;
+
+	font-size: 0.95rem;
+
+	display: flex;
+
+	color: #666;
+}
+
+.postHeader .metaInfo .date {
+	color: #888;
+}
+
+.postHeader .metaInfo .category {
+	color: darkviolet; /* 呼應你的主題色 */
+	font-weight: bold;
+}
+
+/* --- postHeader 和 postContent 的分界線 --- */
+
+.paperCard .divider {
+	border: 0;
+	height: 1px;
+	background: gray;
+	margin: 30px 0;
+}
+
+/* --- 內容區域排版 (Typography) --- */
+.content {
+	font-size: 1.1rem;
+
+	line-height: 1.8;
+}
+
+.content .introSection {
+	background-color: #f8f9fa; /* 很淡的灰色，讓它稍微從白底浮現出來 */
+	border-left: 5px solid darkviolet; /* 左邊加粗線條，強調這是「重點區塊」 */
+
+	padding: 10px 30px;
+	margin-bottom: 40px; /* 跟下面的內容拉開距離 */
+
+	border-radius: 0 10px 10px 0; /* 只有右邊有圓角，左邊是直角(配合線條) */
+}
+
+/* 裝飾用的小標籤 "Intro" */
+.introLabel {
+	display: block;
+	font-size: 1rem;
+	font-weight: bold;
+	color: darkviolet;
+	text-transform: uppercase; /* 強制變大寫 */
+	letter-spacing: 2px; /* 字距拉開 */
+	margin-bottom: 10px;
+}
+
+/* 前言裡面的文字 */
+.introSection p {
+	margin: 0; /* 拿掉 p 預設的 margin，避免被撐太高 */
+	font-size: 1.15rem; /* 字稍微大一點點 */
+	font-style: italic; /* 斜體，增加「敘事感」 */
+	color: #555;
+	line-height: 1.8;
+}
+
+.content h2 {
+	padding-left: 15px;
+
+	margin-top: 40px;
+	margin-bottom: 20px;
+
+	font-size: 1.8rem;
+
+	color: darkviolet; /* 標題用主題色點綴 */
+	border-left: 5px solid darkviolet; /* 左邊加一條線增加設計感 */
+}
+
+.content h3 {
+	font-size: 1.4rem;
+	margin-top: 30px;
+	color: #444;
+}
+
+.content p {
+	margin-bottom: 20px;
+	text-align: justify; /* 左右對齊 */
+}
+
+/* --- 圖片樣式 --- */
+.imageContainer {
+	margin: 40px 0;
+	text-align: center; /* 圖片置中 */
+}
+
+.postImage {
+	max-width: 100%;
+	height: auto;
+	border-radius: 12px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.caption {
+	display: block;
+	margin-top: 10px;
+	font-size: 0.9rem;
+	color: #888;
+	font-style: italic;
+}
+
+/* 手機版 RWD 微調 */
+@media (max-width: 768px) {
+	.articleWrapper {
+		padding: 10px;
+	}
+	.paperCard {
+		padding: 25px;
+	}
+	.title {
+		font-size: 1.8rem;
+	}
+}
