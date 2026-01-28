@@ -1,14 +1,15 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { BrowserRouter } from "react-router-dom"; // User react router
+import { HashRouter } from "react-router-dom";
+// Use react hash router
 
 import App from "./App.jsx";
 import "./index.css";
 
 createRoot(document.getElementById("root")).render(
-	<StrictMode>
-		<BrowserRouter>
-			<App />
-		</BrowserRouter>
-	</StrictMode>,
+  <StrictMode>
+    <HashRouter>
+      <App />
+    </HashRouter>
+  </StrictMode>,
 );
