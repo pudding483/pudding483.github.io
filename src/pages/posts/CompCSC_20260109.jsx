@@ -1,7 +1,7 @@
 // src/pages/posts/CompCSC
 import styles from "./CompCSC_20260109.module.css";
 
-import image from "../../assets/CSC_2026_1.jpg";
+import image from "../../assets/CSC_2026_1_comp.jpg";
 
 function CompCSC_2026_Post() {
 	return (

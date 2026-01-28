@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 
 import styles from "./Sidebar.module.css";
-import avatarImg from "../../assets/playing_the_piano.jpg";
+import avatarImg from "../../assets/playing_the_piano_comp.jpg";
 
 function Sidebar() {
 	// Test case
