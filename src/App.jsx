@@ -25,7 +25,7 @@ function App() {
           <Route index element={<Home />} />
           <Route path="archive" element={<Archive />} />
           <Route
-            path="posts/CompCSC_20260109.jsx"
+            path="posts/GoldenShield_2026"
             element={<GoldenShield2026 />}
           />
 

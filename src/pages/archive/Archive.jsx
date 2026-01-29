@@ -9,7 +9,7 @@ function Archive() {
       date: "2026/01/09",
       description:
         "從早上 10:30 開始一路激戰到下午 3:30 的 CTF 競賽，三人小組共同合作...",
-      path: "/posts/CompCSC_20260109.jsx",
+      path: "/posts/GoldenShield_2026", // same route as App.jsx route path
     },
   ];
 
