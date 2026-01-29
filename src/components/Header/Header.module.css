@@ -1,125 +1,132 @@
 .headerWrapper {
-	width: 100%;
-	height: 100px;
-	/* 用固定高度避免動態調整導致高度過大 */
+  width: 100%;
+  height: 100px;
+  /* 固定高度避免動態調整導致高度過大 */
 
-	padding: 0px 20px 20px 20px;
-	/* 上 右 下 左 */
+  padding: 0px 20px 20px 20px;
+  /* 上 右 下 左 */
 
-	/* make sure at the top*/
-	position: sticky;
-	top: 0;
-	z-index: 100;
+  /* make sure at the top*/
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .headerWrapper .headerSurface {
-	width: 100%;
-	height: 100%;
+  width: 100%;
+  height: 100%;
 
-	background-color: rgba(255, 255, 255, 0.7);
-	backdrop-filter: blur(10px);
+  background-color: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
 
-	border: solid rgba(255, 255, 255, 0.5);
-	border-radius: 0px 0px 15px 15px;
-	/* 左上 右上 右下 左下 */
-	box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
+  border: solid rgba(255, 255, 255, 0.5);
+  border-radius: 0px 0px 15px 15px;
+  /* 左上 右上 右下 左下 */
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
 
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 
-	padding: 20px 40px;
+  padding: 20px 40px;
 }
 
 .headerSurface .leftSection {
-	flex: 1;
-	display: flex;
-	justify-content: flex-start;
+  flex: 1;
+  display: flex;
+  justify-content: flex-start;
 }
 
 .leftSection .logo {
-	font-family: "Noto Sans TC", sans-serif;
-	font-size: 1.5rem;
-	font-weight: bold;
+  font-family: "Noto Sans TC", sans-serif;
+  font-size: 1.5rem;
+  font-weight: bold;
 
-	color: darkviolet;
+  color: darkviolet;
 
-	margin: 0;
-	white-space: nowrap;
+  margin: 0;
+  white-space: nowrap;
 }
 
 .headerSurface .centerSection {
-	flex: 1;
-	display: flex;
-	justify-content: center;
+  flex: 1;
+  display: flex;
+  justify-content: center;
 }
 
 .centerSection .navList {
-	padding: 0;
-	margin: 0;
+  padding: 0;
+  margin: 0;
 
-	gap: 40px;
+  gap: 40px;
 
-	font-size: 1rem;
+  font-size: 1rem;
 
-	display: flex;
+  display: flex;
 
-	list-style: none;
+  list-style: none;
 }
 
 .navList a {
-	text-decoration: none; /* 拿掉預設底線 */
-	color: #333;
-	font-weight: bold;
+  text-decoration: none; /* 拿掉預設底線 */
+  color: #333;
+  font-weight: bold;
 
-	/* 設 relative，配合下方線條使用 absolute */
-	position: relative;
-	padding-bottom: 5px;
+  /* 設 relative，配合下方線條使用 absolute */
+  position: relative;
+  padding-bottom: 5px;
+}
+
+.navList a:hover {
+  background: linear-gradient(to right, #2b19c9, #a40b98, #f5076a);
+  background-clip: text;
+  -webkit-background-clip: text;
+
+  color: transparent;
+  /* color: darkviolet; */
 }
 
 /* 用假物件時做屬標懸停出底線的效果 */
 .navList a::after {
-	content: "";
+  content: "";
 
-	width: 0; /* 起始寬度為 0 (不可視)*/
-	height: 2px;
-	bottom: 0;
-	left: 0;
+  width: 0; /* 起始寬度為 0 (不可視) */
+  height: 2px;
+  bottom: 0;
+  left: 0;
 
-	background-color: darkviolet;
+  /* 讓底下的 hover 效果也能漸變 */
+  background: linear-gradient(to right, #2b19c9, #a40b98, #f5076a);
+  color: transparent;
 
-	position: absolute;
+  position: absolute;
 
-	transition: width 0.3s ease;
+  transition: width 0.3s ease;
 
-	/* equals to
+  /* equals to
 	transition-property: width;
 	transition-duration: 0.3s;
 	transition-timing-function: ease;
 	*/
 }
 
-.navList a:hover {
-	color: darkviolet;
-}
-
 .navList a:hover::after {
-	width: 100%;
+  width: 100%; /* 滑鼠移動上去之後，出現底線動畫 */
 }
 
 .headerSurface .rightSection {
-	gap: 20px;
+  gap: 20px;
 
-	flex: 1;
-	display: flex;
-	justify-content: flex-end;
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .rightSection .actionItem {
-	font-size: 1rem;
-	font-weight: bold;
+  font-size: 1rem;
+  font-weight: bold;
 
-	color: slateblue;
+  color: slateblue;
 
-	cursor: pointer;
+  cursor: pointer;
 }

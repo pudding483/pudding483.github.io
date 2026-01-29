@@ -1,14 +1,27 @@
 .archiveContainer {
   width: 100%;
-  /* 這裡不需要設高度，讓內容撐開就好 */
 }
 
 .archiveContainer .pageTitle {
+  padding-left: 15px;
+
   margin-bottom: 30px;
-  color: #333;
-  font-size: 1.8rem;
-  border-bottom: 2px solid #eee;
-  padding-bottom: 10px;
+
+  font-size: 2rem;
+  font-weight: 700;
+
+  border-left: 5px solid;
+  border-image: linear-gradient(to bottom, #7f00ff, #e100ff) 1;
+
+  /* 為了讓文字有漸變色 */
+  background: linear-gradient(to right, #120c47, #a40b98, #f5076a);
+  background-clip: text;
+  -webkit-background-clip: text;
+
+  color: transparent;
+
+  /* 讓大小和文字占用寬度相同，以此達到漸變效果 */
+  display: inline-block;
 }
 
 .archiveContainer .listGrid {
@@ -19,15 +32,17 @@
 
 /* 長方形卡片本體 */
 .listGrid .postCard {
-  display: block; /* Link 預設是 inline，要改成 block 才能設寬高 padding */
+  padding: 25px;
+
   background-color: white;
   border: 1px solid #e0e0e0;
   border-radius: 12px;
-  padding: 25px;
+
+  display: block; /* Link 預設是 inline，要改成 block 才能設寬高 padding */
+
   text-decoration: none; /* 拿掉連結底線 */
   color: inherit; /* 繼承原本文字顏色 */
 
-  /* 互動效果 */
   transition: all 0.3s ease;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
   cursor: pointer;
@@ -58,11 +73,19 @@
 .cardTag .date {
   padding: 4px 8px;
 
-  background: #f5f5f5;
+  /* background: #f5f5f5;
   border-radius: 4px;
 
   font-size: 0.85rem;
-  color: #888;
+  color: #888; */
+
+  background: rgba(148, 0, 211, 0.1);
+
+  color: rgb(59, 89, 222);
+
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
 }
 
 .description {
