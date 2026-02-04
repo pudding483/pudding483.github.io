@@ -10,11 +10,14 @@ on:
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
+    # runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-        node-version: ["20.x", "22.x", "24.x"]
+        # os: [ubuntu-latest, windows-latest, macos-latest]
+        # node-version: ["20.x", "22.x", "24.x"]
+        node-version: ["22.x"]
+
       fail-fast: false
 
     steps:
@@ -24,6 +27,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
+          cache: "npm" # Caches `~/.npm` folder
 
       - name: Install dependencies
         run: npm install
