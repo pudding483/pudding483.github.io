@@ -52,12 +52,12 @@ export default {
     count: {
       one: "%s 篇文章",
       other: "%s 篇文章",
-    }
+    },
   },
 
   busuanzi: {
-    pv: "縂訪問量",
-    uv: "縂訪客量",
+    pv: "總瀏覽量",
+    uv: "總訪客量",
   },
 
   sticky: "置頂",
@@ -91,6 +91,6 @@ export default {
 
   sponsor: {
     title: "贊助",
-    tip: "請作者喝杯咖啡吧"
+    tip: "請作者喝杯咖啡吧",
   },
 };

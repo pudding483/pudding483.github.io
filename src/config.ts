@@ -2,15 +2,15 @@ export default {
   site: {
     title: "My Blog",
     subtitle: "My Blog Subtitle",
-    description: "D-Sketon's blog",
-    keywords: "D-Sketon, blog, astro, theme",
-    author: "D-Sketon",
-    language: "zh-CN",
+    description: "483's blog",
+    keywords: "483, blog, astro, theme",
+    author: "483",
+    language: "zh-TW",
   },
 
   sidebar: {
     avatar: "/images/avatar.webp",
-    position: "right", // left or right
+    position: "left", // left or right
   },
 
   widgets: ["recent_posts", "category", "tag", "tagcloud"],
@@ -47,7 +47,7 @@ export default {
     },
     moe_icp: {
       icpnumber: "",
-    }
+    },
   },
 
   analytics: {
@@ -184,7 +184,7 @@ export default {
       date: false,
       updated: false,
       license: true,
-      license_type: 'by-nc-sa',
+      license_type: "by-nc-sa",
     },
   },
 
@@ -239,9 +239,9 @@ export default {
     enable: false,
     content: [
       {
-        categories: ""
+        categories: "",
       },
-    ]
+    ],
   },
   triangle_badge: {
     enable: false,
@@ -254,15 +254,7 @@ export default {
     daysAgo: 180, // The number of days after which the article is considered outdated
   },
 
-  share: [
-    "weibo",
-    "twitter",
-    "facebook",
-    "linkedin",
-    "reddit",
-    "qq",
-    "weixin",
-  ],
+  share: ["weibo", "twitter", "facebook", "linkedin", "reddit", "qq", "weixin"],
 
   sponsor: {
     enable: false,

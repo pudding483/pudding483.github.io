@@ -16,10 +16,10 @@ export interface FooterConfig {
     icpnumber: string;
     beian: string;
     recordcode: string;
-  }
+  };
   moe_icp?: {
     icpnumber: string;
-  }
+  };
 }
 
 export interface AnalyticsConfig {
@@ -253,14 +253,30 @@ export const OUTDATE = typedConfig.outdate;
 export const SHARE = typedConfig.share;
 export const SPONSOR = typedConfig.sponsor;
 
-let _BASE_URL = import.meta.env.BASE_URL;
-// normalize BASE_URL, make sure it starts with '/' and does not end with '/'
+// let _BASE_URL = import.meta.env.BASE_URL;
+// // normalize BASE_URL, make sure it starts with '/' and does not end with '/'
+// if (_BASE_URL.endsWith("/")) {
+//   _BASE_URL = _BASE_URL.slice(0, -1);
+// }
+// if (!_BASE_URL.startsWith("/")) {
+//   _BASE_URL = `/${_BASE_URL}`;
+// }
+// export const BASE_URL = _BASE_URL;
+
+// 避免出現 '/undefined/undefined' 的情況
+let _BASE_URL = import.meta.env.BASE_URL ?? "/";
+
+// 1. 如果最後面有 /，先去掉
 if (_BASE_URL.endsWith("/")) {
   _BASE_URL = _BASE_URL.slice(0, -1);
 }
-if (!_BASE_URL.startsWith("/")) {
+
+// 2. 只有當 _BASE_URL "不為空" 且 "不是以 / 開頭" 時，才補上 /
+// 這樣如果是在根目錄，_BASE_URL 就會保持為空字串 ""，不會變成 "//"
+if (_BASE_URL && !_BASE_URL.startsWith("/")) {
   _BASE_URL = `/${_BASE_URL}`;
 }
+
 export const BASE_URL = _BASE_URL;
 
 export const SITE_URL = import.meta.env.SITE.endsWith("/")
