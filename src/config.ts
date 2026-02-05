@@ -1,6 +1,8 @@
+import covers from "./covers";
+
 export default {
   site: {
-    title: "My Blog",
+    title: "483's Blog",
     subtitle: "My Blog Subtitle",
     description: "483's blog",
     keywords: "483, blog, astro, theme",
@@ -13,7 +15,8 @@ export default {
     position: "left", // left or right
   },
 
-  widgets: ["recent_posts", "category", "tag", "tagcloud"],
+  // widgets: ["recent_posts", "category", "tag", "tagcloud"],
+  widgets: ["recent_posts", "category", "tag"],
 
   menu: [
     { name: "home", url: "/" },
@@ -36,7 +39,7 @@ export default {
   },
 
   footer: {
-    since: 2020, // 2020 - current year
+    since: 2026, // 2026 - current year
     powered: true,
     count: true,
     busuanzi: true,
@@ -51,17 +54,18 @@ export default {
   },
 
   analytics: {
-    baidu_analytics: false,
+    // baidu_analytics: false,
     google_analytics: false,
     clarity: false,
   },
 
   social: {
-    // email: mailto:xxx@gmail.com
-    github: "https://github.com/yourname",
-    google: "https://plus.google.com/yourname",
-    twitter: "https://twitter.com/yourname",
-    facebook: "https://www.facebook.com/yourname",
+    email: "mailto:andyshen0211@gmail.com",
+    github: "https://github.com/pudding483",
+    discord: "https://discordapp.com/users/297551909118803969",
+    // google: "https://plus.google.com/yourname",
+    // twitter: "https://twitter.com/yourname",
+    // facebook: "https://www.facebook.com/yourname",
     // instagram: https://www.instagram.com/yourname
     // linkedin: https://www.linkedin.com/in/yourname
     // pinterest: https://www.pinterest.com/yourname
@@ -79,7 +83,6 @@ export default {
     // deviantart: https://yourname.deviantart.com
     // keybase: https://keybase.io/yourname
     // telegram: https://t.me/yourname
-    // discord: https://discordapp.com/users/yourname
     // steam: https://steamcommunity.com/id/yourname
   },
 
@@ -190,7 +193,7 @@ export default {
 
   preloader: {
     enable: true,
-    text: "少女祈祷中...",
+    text: "少女祈禱中...",
     rotate: true, // whether to rotate the icon
   },
 
@@ -236,10 +239,11 @@ export default {
   },
   // show categories card on home page
   home_categories: {
-    enable: false,
+    enable: true,
     content: [
       {
-        categories: "",
+        categories: "Blog",
+        cover: "/images/SAO_2014.webp",
       },
     ],
   },
@@ -254,7 +258,8 @@ export default {
     daysAgo: 180, // The number of days after which the article is considered outdated
   },
 
-  share: ["weibo", "twitter", "facebook", "linkedin", "reddit", "qq", "weixin"],
+  // share: ["weibo", "twitter", "facebook", "linkedin", "reddit", "qq", "weixin"],
+  share: ["facebook", "weixin"],
 
   sponsor: {
     enable: false,
