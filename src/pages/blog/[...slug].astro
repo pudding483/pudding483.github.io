@@ -1,26 +1,35 @@
 ---
+// astro: ... 引入 astro 原生的虛擬模組， slug: 通常只包含 小寫英文、數字 和 連字號 -
 import { type CollectionEntry, getCollection, render } from "astro:content";
 
 import BlogLayout from "../../layouts/BlogLayout.astro";
 
+// 動態路由的靜態路徑產生函式
 export async function getStaticPaths() {
-  const posts = await getCollection("blog");
+  const posts = await getCollection("blog"); // 抓取所有文章
   return posts.map((post, index) => ({
-    params: { slug: post.id },
+    params: { slug: post.id }, // slug variable = post.id
     props: {
+      // 把文章資料傳給頁面使用
       post,
       prev: posts[index - 1] || null,
       next: posts[index + 1] || null,
     },
   }));
 }
+// 定義頁面接收的 props 類型，同時能做到 Error checking
 type Props = {
   post: CollectionEntry<"blog">;
   prev: CollectionEntry<"blog"> | null;
   next: CollectionEntry<"blog"> | null;
 };
 
-const { post, prev, next } = Astro.props;
+const { post, prev, next } = Astro.props; // 藉由 Astro 框架來傳遞 props
+/* Equals to: (所以 Astro.props 就是一個 JavaScript 物件)
+const post = Astro.props.post;
+const prev = Astro.props.prev;
+const next = Astro.props.next;
+*/
 const { Content, headings } = await render(post);
 ---
 
@@ -38,10 +47,15 @@ const { Content, headings } = await render(post);
   import PhotoSwipeLightbox from "photoswipe/lightbox";
   import "photoswipe/style.css";
 
+  // 啟用了 View Transitions ，當使用者按上一頁或連結時，不會整頁刷新。
+  // 所以使用 astro:page-load 確定每次頁面內容更新後，
+  // 程式碼都會被執行一次，來重新綁定圖片點擊事件。
   document.addEventListener("astro:page-load", () => {
     document
       .querySelectorAll(".article-entry img")
       // @ts-expect-error - change from Element to HTMLImageElement
+      // PhotoSwipe 套件要求圖片必須被包在 <a> 連結標籤內才能運作
+      // 所以這裡的邏輯是把每一張圖片都包在 <a> 標籤內，並且把圖片的 src 設為連結的 href
       .forEach((element: HTMLImageElement) => {
         if (
           element.parentElement?.tagName === "A" ||
@@ -50,12 +64,13 @@ const { Content, headings } = await render(post);
           return;
         const a = document.createElement("a");
         a.href ? (a.href = element.src) : a.setAttribute("href", element.src);
+        // 確認圖片是否載入完成，因為 PhotoSwipe 需要知道圖片的寬高才能正常運作
         if (element.naturalWidth || element.naturalHeight) {
           a.dataset.pswpWidth = element.naturalWidth + "";
           a.dataset.pswpHeight = element.naturalHeight + "";
         } else {
           console.warn(
-            "Image naturalWidth and naturalHeight cannot be obtained right now, fallback to onload."
+            "Image naturalWidth and naturalHeight cannot be obtained right now, fallback to onload.",
           );
           element.onload = () => {
             a.dataset.pswpWidth = element.naturalWidth + "";
@@ -73,10 +88,12 @@ const { Content, headings } = await render(post);
       gallery: ".article-entry",
       children: "a.article-gallery-item",
       pswpModule: () => import("photoswipe"),
+      //// pswpModule 動態引入模組 (Code Splitting)，節省效能
     }).init();
   });
 </script>
 
+{/* 針對流程圖，目的是解決「深色模式切換」與「頁面跳轉」的問題 */}
 <script>
   import mermaid from "mermaid";
 
@@ -130,6 +147,7 @@ const { Content, headings } = await render(post);
       querySelector: "pre.mermaid",
     });
   };
+  // 當使用者切換主題時，會觸發 theme-set 事件，邏輯是重新載入 Mermaid 圖表
   const themeSetHandler = (e: any) => {
     let theme = e.detail.theme;
     if (e.detail.theme === "light") {
@@ -149,6 +167,7 @@ const { Content, headings } = await render(post);
       .catch(console.error);
   };
   const mermaidInit = () => {
+    // 為了確保事件不會被重複綁定，先移除再添加
     document.body.removeEventListener("theme-set", themeSetHandler);
     document.body.addEventListener("theme-set", themeSetHandler);
 

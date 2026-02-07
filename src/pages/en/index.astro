@@ -1,0 +1,119 @@
+---
+/* src/pages/en/index.astro */
+import { Icon } from "astro-icon/components";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Footer from "../../components/Footer.astro";
+import HeaderTitle from "../../components/partial/HeaderTitle.astro";
+import { SITE, BASE_URL } from "../../utils/config";
+
+const title = "Under Construction";
+const message =
+  "此頁面正在施工中，請稍後再回來。<br />We are currently working on this page.";
+---
+
+<BaseLayout title={title}>
+  <HeaderTitle title={SITE.title} url={`${BASE_URL}/`} slot="header" />
+
+  <div class="construction-wrapper">
+    <div class="construction-card">
+      <div class="icon-box">
+        <Icon name="fa6-solid:screwdriver-wrench" size={80} />
+      </div>
+
+      <h1>{title}</h1>
+      <p set:html={message} />
+
+      <a href={`${BASE_URL}/`} class="back-btn">
+        <Icon name="fa6-solid:house" />
+        <span>回首頁 (Back to Home)</span>
+      </a>
+    </div>
+  </div>
+
+  <Footer slot="footer" />
+</BaseLayout>
+
+<style>
+  /* 1. 確保外層容器佔滿寬度並垂直水平置中 */
+  .construction-wrapper {
+    display: flex;
+    justify-content: center; /* 水平置中 */
+    align-items: center; /* 垂直置中 */
+    width: 100%; /* 重要：要撐開寬度才會置中 */
+    min-height: 60vh; /* 給予足夠的高度，讓它看起來在畫面中間 */
+    padding: 20px;
+    box-sizing: border-box;
+  }
+
+  /* 2. 卡片樣式：加深背景色 (黑底) */
+  .construction-card {
+    background: rgba(0, 0, 0, 0.75); /* 深黑色背景，帶一點點透明度 */
+    backdrop-filter: blur(10px); /* 毛玻璃效果 */
+    padding: 3rem;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); /* 陰影讓卡片浮起來 */
+    text-align: center;
+    max-width: 500px;
+    width: 100%;
+    border: 1px solid rgba(255, 255, 255, 0.1); /* 微微的白邊框增加質感 */
+    animation: fadeIn 0.5s ease-in-out;
+  }
+
+  .icon-box {
+    margin-bottom: 1.5rem;
+    color: #ff7b7b; /* 自定義強調色，或者使用 var(--color-primary) */
+  }
+
+  h1 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: #ffffff; /* 確保標題是白色 */
+    font-weight: bold;
+  }
+
+  p {
+    margin-bottom: 2rem;
+    line-height: 1.6;
+    color: #cccccc; /* 確保副標題是淺灰色 */
+  }
+
+  .back-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center; /* 確保按鈕內容置中 */
+    gap: 8px;
+    padding: 12px 30px;
+    background: #ff7b7b; /* 按鈕顏色 */
+    color: white;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: bold;
+    transition:
+      transform 0.2s,
+      opacity 0.2s;
+  }
+
+  .back-btn:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* 強制隱藏不需要的元素 */
+  :global(#sidebar) {
+    display: none !important;
+  }
+  :global(#header-subtitle) {
+    pointer-events: none;
+  }
+</style>

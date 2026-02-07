@@ -9,6 +9,7 @@ import {
   MENU,
   BANNER,
   BANNER_SRCSET,
+  Translation, // 新增這個區塊，專門控制翻譯功能
   TRIANGLE_BADGE,
 } from "../utils/config";
 import { urlFor } from "../utils/urlFor";
@@ -18,6 +19,7 @@ import RssBtn from "./partial/RssBtn";
 import SearchBtn from "./partial/SearchBtn";
 import ThemeBtn from "./partial/ThemeBtn";
 import SearchBox from "./partial/SearchBox";
+import TranslateBtn from "./partial/TranslateBtn"; // 新增語言轉換按鈕
 
 type Props = {
   title?: string;
@@ -26,7 +28,9 @@ type Props = {
 
 const { title = SITE.title, cover } = Astro.props;
 const posts = await getCollection("blog");
-const sortedPosts = posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const sortedPosts = posts.sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
 ---
 
 <div id="header-nav">
@@ -50,6 +54,10 @@ const sortedPosts = posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDa
   <nav id="sub-nav" aria-label="Secondary navigation">
     <RssBtn client:load url={BASE_URL} className="nav-icon" />
     <SearchBtn client:load className="nav-icon" />
+
+    {/* 新增語言轉換按鈕，同時在 config.ts 設定可自由開關顯示 */}
+    {Translation.enable && <TranslateBtn client:load className="nav-icon" />}
+
     <ThemeBtn client:load className="nav-icon" />
   </nav>
   {

@@ -167,6 +167,11 @@ export interface BannerSrcSetConfig {
   }[];
 }
 
+// 這裡新增一個專門控制翻譯功能的 interface，讓 config.ts 的結構更清晰
+export interface TranslationConfig {
+  enable: boolean;
+}
+
 export interface FireworkConfig {
   enable: boolean;
   disable_on_mobile: boolean;
@@ -218,6 +223,7 @@ const typedConfig = config as {
   menu: MenuConfig[];
   banner: string;
   banner_srcset: BannerSrcSetConfig;
+  translation: TranslationConfig; // 新增這個區塊，專門控制翻譯功能
   firework: FireworkConfig;
   home_categories: HomeCategoriesConfig;
   widgets: string[];
@@ -246,6 +252,7 @@ export const WIDGETS = typedConfig.widgets;
 export const MENU = typedConfig.menu;
 export const BANNER = typedConfig.banner;
 export const BANNER_SRCSET = typedConfig.banner_srcset;
+export const Translation = typedConfig.translation; // 新增這個區塊，專門控制翻譯功能
 export const FIREWORK = typedConfig.firework;
 export const HOME_CATEGORIES = typedConfig.home_categories;
 export const TRIANGLE_BADGE = typedConfig.triangle_badge;

@@ -20,6 +20,14 @@ export default defineConfig({
 
   base: "/",
 
+  // 新增語言轉換按鈕
+  i18n: {
+    defaultLocale: "zh-TW",
+    locales: ["zh-TW", "en"], // 支援 繁體中文 和 英文
+    routing: {
+      prefixDefaultLocale: false, // 預設語言 (zh-TW) 不顯示 /zh-TW/
+    },
+  },
   markdown: {
     remarkPlugins: [remarkMath],
     rehypePlugins: [

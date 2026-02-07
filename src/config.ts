@@ -3,7 +3,7 @@ import covers from "./covers";
 export default {
   site: {
     title: "483's Blog",
-    subtitle: "My Blog Subtitle",
+    subtitle: "483 的小天地",
     description: "483's blog",
     keywords: "483, blog, astro, theme",
     author: "483",
@@ -36,6 +36,11 @@ export default {
       { src: "/images/banner-800w.webp", media: "(max-width: 799px)" },
       { src: "/images/banner.webp", media: "(min-width: 800px)" },
     ],
+  },
+
+  // 新增這個區塊，專門控制翻譯功能
+  translation: {
+    enable: true,
   },
 
   footer: {

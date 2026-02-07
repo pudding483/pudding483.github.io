@@ -9,6 +9,7 @@ import HeaderTitle from "../../../components/partial/HeaderTitle.astro";
 import ArchiveList from "../../../components/ArchiveList.astro";
 import { BASE_URL } from "../../../utils/config";
 
+// 與 page 類似，但是這裡多了 [category] 參數，代表有兩層的動態路由
 export async function getStaticPaths({ paginate }: { paginate: Function }) {
   const posts = await getCollection("blog");
   const categoriesMap: Map<string, CollectionEntry<"blog">[]> = new Map();
@@ -24,6 +25,7 @@ export async function getStaticPaths({ paginate }: { paginate: Function }) {
     }
   });
   const categories = [...categoriesMap.keys()];
+  // 每一個類別都要分頁
   return [...categoriesMap.entries()]
     .map((categoryMap) => {
       categoryMap[1].sort((a, b) => {
@@ -33,6 +35,7 @@ export async function getStaticPaths({ paginate }: { paginate: Function }) {
     })
     .flatMap((categoryMap) => {
       return paginate(categoryMap[1], {
+        // categoryMap[1] 是該類別的文章列表
         params: { category: categoryMap[0] },
         props: { categories },
         pageSize: 5,
@@ -61,7 +64,7 @@ const { category } = Astro.params;
   <!-- Header -->
   <HeaderTitle
     title={`${__("category")}: ${category}`}
-    url=`${BASE_URL}/categories/${category}`
+    url={`${BASE_URL}/categories/${category}`}
     slot="header"
   />
   <!-- Content -->

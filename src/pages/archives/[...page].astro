@@ -11,12 +11,15 @@ import HeaderTitle from "../../components/partial/HeaderTitle.astro";
 import { BASE_URL } from "../../utils/config";
 import CategoryList from "../../components/partial/CategoryList.astro";
 
+// 首頁使用 paginate 來產生分頁路由 (Astro 原生的魔法函式)
 export async function getStaticPaths({ paginate }: { paginate: Function }) {
   const posts = await getCollection("blog");
   posts.sort((a, b) => {
+    // 以發佈日期排序，最新的在前面
     return b.data.pubDate.getTime() - a.data.pubDate.getTime();
   });
   return paginate(posts, {
+    // 每頁顯示 10 篇文章
     pageSize: 10,
   });
 }
@@ -48,6 +51,8 @@ page.data.forEach((post) => {
 const posts = await getCollection("blog");
 const tags = new Set<string>();
 const categories = new Set<string>();
+
+// 收集所有文章的 tags 和 categories
 posts.forEach((post) => {
   if (Array.isArray(post.data.tags)) {
     post.data.tags.forEach((tag) => {

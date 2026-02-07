@@ -30,7 +30,9 @@ type Props = {
 
 export async function getStaticPaths({ paginate }: { paginate: Function }) {
   const posts = await getCollection("blog");
-  const sortedPosts = posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+  const sortedPosts = posts.sort(
+    (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+  );
   return paginate(sortedPosts, {
     pageSize: 10,
   });
@@ -41,6 +43,7 @@ const { page } = Astro.props;
 <BaseLayout>
   <!-- Header -->
   <HeaderTitle title={SITE.title} url=`${BASE_URL}/` slot="header" />
+  {/* slot 是 Astro 的俱名插槽，把 component 塞進指定 slot */}
   {
     SITE.subtitle && (
       <HeaderSubTitle
@@ -53,13 +56,19 @@ const { page } = Astro.props;
   <!-- Content -->
   <section id="main" aria-label="Main content">
     {
+      // 非常重要，用條件渲染且引入元件的方式，實作 config 裡面 Home Categories 的開關
       HOME_CATEGORIES.enable && (
         <HomeCategories content={HOME_CATEGORIES.content} />
       )
     }
     {
+      /* page.data 從 Astro.props 中解構出來，一頁有 pagesize 篇文章，
+      用 map 把每一筆 post 轉換成 HTML 標籤 */
+    }
+    {
       page.data.map((post, index) => (
         <div class="post-wrapper">
+          {/* 利用 { right: index % 2 === 1 } ，一個動態 class 來實作左圖右文、右圖左文 */}
           <div
             class:list={["post-wrap", { right: index % 2 === 1 }]}
             data-aos="fade-up"
@@ -70,6 +79,7 @@ const { page } = Astro.props;
               aria-label={post.id}
             />
             <div class:list={["post-cover", { right: index % 2 === 1 }]}>
+              {/* urlFor 定義在 utils ，保持模板 .astro 的乾淨 */}
               <img
                 loading="lazy"
                 src={urlFor(post.data.cover || randomCover() || BANNER)}
@@ -107,6 +117,7 @@ const { page } = Astro.props;
         </div>
       ))
     }
+    {/* 把 page 物件(父層)傳遞給子組件(pagination) */}
     <Pagination
       prevUrl={page.url.prev}
       nextUrl={page.url.next}

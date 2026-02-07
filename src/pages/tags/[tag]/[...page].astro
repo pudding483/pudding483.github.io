@@ -9,6 +9,7 @@ import HeaderTitle from "../../../components/partial/HeaderTitle.astro";
 import ArchiveList from "../../../components/ArchiveList.astro";
 import { BASE_URL } from "../../../utils/config";
 
+// 和 categories 的邏輯原則上相同
 export async function getStaticPaths({ paginate }: { paginate: Function }) {
   const posts = await getCollection("blog");
   const tagsMap: Map<string, CollectionEntry<"blog">[]> = new Map();

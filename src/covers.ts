@@ -1,5 +1,5 @@
 export default [
-  "/images/SAO_2014.webp",
+  // "/images/SAO_2014.webp",
   "/images/Re0-765x372.webp",
   "/images/NGNL-1048x645.webp",
   "/images/GuiltyCrown-1440x900.webp",
