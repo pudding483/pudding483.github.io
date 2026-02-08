@@ -4,8 +4,17 @@ interface Props {
   className?: string;
 }
 
+const BUTTON_TITLES = {
+  "zh-TW": "切換至英文",
+  en: "Switch to Madarin",
+};
+
+type Language = "zh-TW" | "en";
+
 export default function TranslateBtn({ className }: Props) {
-  const [currentLang, setCurrentLang] = useState("zh-TW");
+  // 因為 currentLang 是一般的 str (ts 的泛型 Generics)，
+  // 所以要定義一個 type 來限制它只能是 "zh-TW" 或 "en"
+  const [currentLang, setCurrentLang] = useState<Language>("zh-TW");
 
   useEffect(() => {
     // 判斷當前語言
@@ -17,33 +26,41 @@ export default function TranslateBtn({ className }: Props) {
   }, []);
 
   const toggleLanguage = () => {
-    const currentPath = window.location.pathname;
-
-    // 1. 取得不含語言前綴的路徑 (把 /en 去掉)
-    // 例如: "/en/about" -> "/about", "/en" -> "/"
-    const basePath = currentPath.replace(/^\/en/, "") || "/";
-
-    let newPath = "";
-
     if (currentLang === "zh-TW") {
-      // 2. 切換到英文
-      // 邏輯：加上 /en 前綴
-      // 注意：如果 basePath 是 "/"，則變為 "/en"，否則為 "/en/about"
-      newPath = `/en${basePath === "/" ? "" : basePath}`;
+      // 🚧 施工階段：不管在哪，切英文一律去施工頁
+      window.location.href = "/en";
     } else {
-      // 3. 切換到中文
-      // 邏輯：直接使用 basePath (即移除 /en 之後的路徑)
-      newPath = basePath;
+      // 🚧 施工階段：從英文切回來，一律回中文首頁
+      window.location.href = "/";
     }
 
-    window.location.href = newPath;
+    // const currentPath = window.location.pathname;
+
+    // // 取得不含語言前綴的路徑 (把 /en 去掉)
+    // // 例如: "/en/about" -> "/about", "/en" -> "/"
+    // const basePath = currentPath.replace(/^\/en/, "") || "/";
+
+    // let newPath = "";
+
+    // if (currentLang === "zh-TW") {
+    //   // 切換到英文
+    //   // 邏輯：加上 /en 前綴
+    //   // 注意：如果 basePath 是 "/"，則變為 "/en"，否則為 "/en/about"
+    //   newPath = `/en${basePath === "/" ? "" : basePath}`;
+    // } else {
+    //   // 3. 切換到中文
+    //   // 邏輯：直接使用 basePath (即移除 /en 之後的路徑)
+    //   newPath = basePath;
+    // }
+
+    // window.location.href = newPath;
   };
 
   return (
     <div
       className={className}
       onClick={toggleLanguage}
-      title={`Switch to ${currentLang === "zh-TW" ? "English" : "繁體中文"}`}
+      title={BUTTON_TITLES[currentLang]}
       role="button"
       aria-label="Switch Language"
     >

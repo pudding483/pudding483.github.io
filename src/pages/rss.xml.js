@@ -1,11 +1,13 @@
-import rss from "@astrojs/rss";
+import rss from "@astrojs/rss"; // rss 用來作為 文章訂閱通知
 import { getCollection } from "astro:content";
 
 import { SITE, BASE_URL } from "../utils/config";
 
 export async function GET(context) {
   const posts = await getCollection("blog");
-  const sortedPosts = posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+  const sortedPosts = posts.sort(
+    (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+  );
   return rss({
     title: SITE.title,
     description: SITE.description,
