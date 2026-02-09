@@ -6,7 +6,7 @@ import {
   faCircleHalfStroke,
 } from "@fortawesome/free-solid-svg-icons";
 
-import useTheme, { type Theme } from "../../hooks/useTheme";
+import useTheme, { type Theme } from "../../../hooks/useTheme";
 
 // 定義多語言提示文字
 const I18N_TEXT = {

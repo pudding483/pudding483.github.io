@@ -1,4 +1,4 @@
-import "../../styles/search.stylus";
+import "../../../styles/search.stylus";
 import Fuse from "fuse.js";
 import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -25,7 +25,7 @@ export default function SearchBox({
     data: InferEntrySchema<"blog">;
     rendered?: RenderedContent;
     filePath?: string;
-}[];
+  }[];
   url: string;
 }) {
   // User's input

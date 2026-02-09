@@ -1,10 +1,8 @@
-import covers from "./covers";
-
 export default {
   site: {
     title: "483's Blog",
     subtitle: "483 的小天地",
-    description: "483's blog",
+    description: "CTF player | 象棋愛好者",
     keywords: "483, blog, astro, theme",
     author: "483",
     language: "zh-TW",
@@ -40,7 +38,7 @@ export default {
 
   // 新增這個區塊，專門控制翻譯功能
   translation: {
-    enable: true,
+    enable: false,
   },
 
   footer: {
@@ -48,14 +46,14 @@ export default {
     powered: true,
     count: true,
     busuanzi: true,
-    icp: {
-      icpnumber: "",
-      beian: "",
-      recordcode: "",
-    },
-    moe_icp: {
-      icpnumber: "",
-    },
+    // icp: {
+    //   icpnumber: "",
+    //   beian: "",
+    //   recordcode: "",
+    // },
+    // moe_icp: {
+    //   icpnumber: "",
+    // },
   },
 
   analytics: {
@@ -253,9 +251,9 @@ export default {
     ],
   },
   triangle_badge: {
-    enable: false,
+    enable: true,
     type: "github",
-    link: "https://github.com/D-Sketon/astro-theme-reimu",
+    link: "https://github.com/pudding483/pudding483.github.io",
   },
   // whether to display the notification when the article is outdated
   outdate: {
@@ -264,7 +262,7 @@ export default {
   },
 
   // share: ["weibo", "twitter", "facebook", "linkedin", "reddit", "qq", "weixin"],
-  share: ["facebook", "weixin"],
+  share: ["facebook"],
 
   sponsor: {
     enable: false,
