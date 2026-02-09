@@ -8,7 +8,8 @@ export interface SiteConfig {
 }
 
 export interface FooterConfig {
-  since: number;
+  // since: number;
+  since: number | string; // 允許 string 類型，就能寫 年份/月份
   powered: boolean;
   count: boolean;
   busuanzi: boolean;

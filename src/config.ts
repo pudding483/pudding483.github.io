@@ -43,7 +43,7 @@ export default {
   },
 
   footer: {
-    since: 2026, // 2026 - current year
+    since: "2026/02", // 2026 - current year
     powered: true,
     count: true,
     busuanzi: true,
