@@ -8,6 +8,7 @@ export default {
   next: "次へ",
   comment: "コメント",
   reading: "閲覧数",
+  friends_title: "友人",
   archive_a: "アーカイブ",
   archive_b: '"アーカイブ: %s"',
   page: "ページ %s",
@@ -23,7 +24,7 @@ export default {
 
   home: "ホーム",
   about: "プロフィール",
-  friend: "フレンド",
+  friends: "フレンド",
   archives: "アーカイブ",
 
   sidebar: {

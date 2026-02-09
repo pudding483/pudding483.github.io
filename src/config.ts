@@ -20,6 +20,7 @@ export default {
     { name: "home", url: "/" },
     { name: "archives", url: "/archives" },
     { name: "about", url: "/about" },
+    { name: "friends", url: "/friends" },
   ],
 
   banner: "/images/banner.webp", // which means themes/reimu/source/images/banner.webp

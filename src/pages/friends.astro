@@ -1,0 +1,101 @@
+---
+// src/pages/friends.astro
+
+import "../styles/base.stylus";
+import "katex/dist/katex.min.css";
+import "../styles/markdown.stylus";
+
+import { BASE_URL } from "../utils/config";
+import { __ } from "../utils/i18n"; // 用於多語言
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Footer from "../components/Footer.astro";
+import DateComponent from "../components/post/Date.astro"; // 改名避免衝突
+import Comment from "../components/post/Comment.astro";
+import HeaderTitle from "../components/partial/header/HeaderTitle.astro";
+
+import FriendCard from "../components/mdx/FriendCard.astro";
+
+const pubDate = new Date(); // 或者固定一個日期
+// const description = "我的朋友們"; for SEO, but due to i18n, shelve it for now
+---
+
+<BaseLayout
+  title={__("friends")}
+  isPost={true}
+  toc={false}
+>
+  <HeaderTitle title={__("friends_title")} url={`${BASE_URL}/friends`} slot="header" />
+
+  <section id="main" aria-label="Main content">
+    <article
+      class="article"
+      itemprop="blogPost"
+      itemscope
+      itemtype="https://schema.org/BlogPosting"
+      data-aos="fade-up"
+    >
+      <div class="article-inner">
+        <div class="article-meta">
+          <DateComponent pubDate={pubDate} />
+        </div>
+
+        <div class="hr-line"></div>
+
+        <div class="article-entry" itemprop="articleBody">
+          
+          <p>歡迎來到我的朋友圈，這裡記錄了一些友站連結。</p>
+          
+          <FriendCard />
+
+        </div>
+        
+        <slot name="footer" />
+      </div>
+    </article>
+
+    <Comment comment={true} />
+  </section>
+
+  <Footer slot="footer" />
+</BaseLayout>
+
+<style>
+  .hr-line {
+    margin: 12px 36px;
+    opacity: 0.3;
+    height: 4px;
+    background-image: linear-gradient(
+      to right,
+      var(--red-0) 50%,
+      transparent 0%
+    );
+    background-size: 50px 4px;
+    background-repeat: repeat-x;
+    filter: drop-shadow(0px 0px 2px var(--red-1));
+    transition: opacity 0.3s;
+    &:hover { opacity: 0.5; }
+  }
+
+  .article-inner {
+    background: var(--color-wrap);
+    border-radius: 12px;
+    display: flow-root;
+    transition: 0.3s;
+  }
+
+  .article-meta {
+    display: flex;
+    flex-direction: column;
+    padding: 20px 36px 0;
+    @media screen and (max-width: 767px) {
+      padding: 20px 16px 0;
+    }
+  }
+
+  .article-entry {
+    padding: 0 36px 20px;
+    @media screen and (max-width: 767px) {
+      padding: 0 16px 20px;
+    }
+  }
+</style>

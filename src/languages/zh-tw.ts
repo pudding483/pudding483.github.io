@@ -8,6 +8,7 @@ export default {
   next: "下一頁",
   comment: "留言",
   reading: "閱讀",
+  friends_title: "朋友圈",
   archive_a: "彙整",
   archive_b: "彙整：%s",
   page: "第 %s 頁",
@@ -23,7 +24,7 @@ export default {
 
   home: "首頁",
   about: "關於",
-  friend: "友鏈",
+  friends: "友圈",
   archives: "歸檔",
 
   sidebar: {

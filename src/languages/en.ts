@@ -8,6 +8,7 @@ export default {
   next: "Next",
   comment: "Comments",
   reading: "Readings",
+  friends_title: "Moments",
   archive_a: "Archives",
   archive_b: "Archives: %s",
   page: "Page %s",
@@ -23,7 +24,7 @@ export default {
 
   home: "Home",
   about: "About",
-  friend: "Friend",
+  friends: "Friends",
   archives: "Archives",
 
   sidebar: {
@@ -52,7 +53,7 @@ export default {
     count: {
       one: "%s post",
       other: "%s posts",
-    }
+    },
   },
 
   busuanzi: {
@@ -63,7 +64,8 @@ export default {
   sticky: "Sticky",
 
   outdate: {
-    notice: "This article was last updated on %s. Please note that the content may no longer be applicable.",
+    notice:
+      "This article was last updated on %s. Please note that the content may no longer be applicable.",
   },
 
   article_copyright: {
@@ -74,7 +76,8 @@ export default {
     updated: "Updated: ",
     license: "License: ",
     license_content_before: "All articles on this blog are licensed under the ",
-    license_content_after: " license agreement unless otherwise stated. Please indicate the source when reprinting!",
+    license_content_after:
+      " license agreement unless otherwise stated. Please indicate the source when reprinting!",
   },
 
   heatmap: {
@@ -91,6 +94,6 @@ export default {
 
   sponsor: {
     title: "Sponsor",
-    tip: "Buy me a coffee"
+    tip: "Buy me a coffee",
   },
 };

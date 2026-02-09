@@ -60,10 +60,11 @@ const { page, categories } = Astro.props;
 const { category } = Astro.params;
 ---
 
-<BaseLayout title={`${__("category")}: ${category}`}>
+{/* 這裡用 categories 因為 i18n 字典裡已經有了這個 key */}
+<BaseLayout title={`${__("categories")}: ${category}`}>
   <!-- Header -->
   <HeaderTitle
-    title={`${__("category")}: ${category}`}
+    title={`${__("categories")}: ${category}`}
     url={`${BASE_URL}/categories/${category}`}
     slot="header"
   />

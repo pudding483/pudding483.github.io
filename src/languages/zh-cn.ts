@@ -8,6 +8,7 @@ export default {
   next: "下一页",
   comment: "留言",
   reading: "阅读",
+  friends_title: "小伙伴们",
   archive_a: "归档",
   archive_b: "归档：%s",
   page: "第 %s 页",
@@ -23,7 +24,7 @@ export default {
 
   home: "首页",
   about: "关于",
-  friend: "友链",
+  friends: "友链",
   archives: "归档",
 
   sidebar: {
@@ -52,7 +53,7 @@ export default {
     count: {
       one: "%s 篇文章",
       other: "%s 篇文章",
-    }
+    },
   },
 
   busuanzi: {
@@ -91,6 +92,6 @@ export default {
 
   sponsor: {
     title: "赞助",
-    tip: "请作者喝杯咖啡吧"
+    tip: "请作者喝杯咖啡吧",
   },
 };
