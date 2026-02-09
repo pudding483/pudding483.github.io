@@ -1,7 +1,8 @@
 name: Build
 
 on:
-  push:
+  # push:
+  workflow_dispatch: # 暫時設定為手動觸發，避免頻繁觸發 CI
     branches:
       - main
   pull_request:
