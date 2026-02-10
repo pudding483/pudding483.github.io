@@ -17,12 +17,15 @@ const totalmin2read = await totalReadingTime();
     <div id="footer-info" class="inner">
       <div>
         <Icon name="fa6-regular:copyright" />
-        {FOOTER.since} 
-        { // 用三元運算子判斷是否顯示年份範圍，範例：parseInt("2026/02") = 2026
+        &thinsp; {/* 用窄空格，盡量不改底下的 css ，不然還要多用容器處理 */}
+        {FOOTER.since}
+        {
+          // 用三元運算子判斷是否顯示年份範圍，範例：parseInt("2026/02") = 2026
           parseInt(String(FOOTER.since)) < new Date().getFullYear()
-            ? ` ~ ${new Date().getFullYear()}` 
+            ? ` ~ ${new Date().getFullYear()}`
             : " ~ Now"
-        }&nbsp;
+        }
+        &nbsp;
         <span class="footer-info-sep"></span>
         {SITE.author || SITE.title}
       </div>

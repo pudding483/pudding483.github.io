@@ -6,6 +6,7 @@ export default {
     keywords: "483, blog, astro, theme",
     author: "483",
     language: "zh-TW",
+    icon: "/images/favicon.ico",
   },
 
   sidebar: {
@@ -43,7 +44,7 @@ export default {
   },
 
   footer: {
-    since: "2026/02", // 2026 - current year
+    since: "2026/02", // 已經修改成吃字串的形式
     powered: true,
     count: true,
     busuanzi: true,

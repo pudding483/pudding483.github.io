@@ -3,7 +3,7 @@
 
 // 保持與 MarkdownLayout 一致，確保 H2, ul, li 長得一樣
 import "../styles/base.stylus";
-import "katex/dist/katex.min.css"; 
+import "katex/dist/katex.min.css";
 import "../styles/markdown.stylus";
 
 import { BASE_URL } from "../utils/config";
@@ -18,11 +18,7 @@ const pubDate = new Date("2026-02-09"); // 或是 new Date() 代表今天
 // const description = "關於 483 的 blog"; for SEO, but due to i18n, shelve it for now
 ---
 
-<BaseLayout
-  title={__("about")}
-  isPost={true} 
-  toc={false} 
->
+<BaseLayout title={__("about")} isPost={true} toc={false}>
   <HeaderTitle title={__("about")} url={`${BASE_URL}/about`} slot="header" />
 
   <section id="main" aria-label="Main content">
@@ -37,18 +33,20 @@ const pubDate = new Date("2026-02-09"); // 或是 new Date() 代表今天
         <div class="article-meta">
           <PostDate pubDate={pubDate} />
         </div>
-        
+
         <div class="hr-line"></div>
 
         <div class="article-entry" itemprop="articleBody">
-          
           {/* 自我介紹區塊 - 你可以在這裡自由寫 HTML/CSS 排版 */}
           <h2>本站信息</h2>
           <ul>
             <li><strong>站名：</strong> 483's Blog</li>
             <li><strong>站長：</strong> 483</li>
-            <li><strong>CTF player ID：</strong> pudding483</li>
-            <li><strong>地址：</strong> <a href="https://pudding483.github.io/">https://pudding483.github.io/</a></li>
+            <li>
+              <strong>地址：</strong>
+              <a href="https://pudding483.github.io/"
+                >https://pudding483.github.io/</a>
+            </li>
           </ul>
 
           <br />
@@ -57,17 +55,19 @@ const pubDate = new Date("2026-02-09"); // 或是 new Date() 代表今天
           <ul>
             <li><strong>名字：</strong> 沈柏安</li>
             <li><strong>興趣：</strong> CTF、象棋</li>
+            <li><strong>CTF player ID：</strong> pudding483</li>
           </ul>
 
           {/* 申請方法區塊 */}
-          {/* <h2>申請方法</h2>
+          {
+            /* <h2>申請方法</h2>
           <ul>
             <li>添加本站后，在本页留言，格式如下...</li>
           </ul>
-           */}
-
+           */
+          }
         </div>
-        
+
         <slot name="footer" />
       </div>
     </article>
@@ -122,7 +122,7 @@ const pubDate = new Date("2026-02-09"); // 或是 new Date() 代表今天
   .article-entry {
     padding: 0 36px 20px;
   }
-  
+
   @media screen and (max-width: 767px) {
     .article-entry {
       padding: 0 16px 20px;

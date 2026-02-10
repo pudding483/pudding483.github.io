@@ -7,8 +7,14 @@
   --red-5: #ffecec;
   --red-5-5: #fff3f3;
   --red-6: #fff7f7;
+  --purple-1: #9b59b6;
+  --purple-2: #af7ac5;
+  --purple-3: #c39bd3;
+  --purple-4: #d7bde2;
   --color-red-6-shadow: rgba(255, 78, 78, 0.6);
   --color-red-3-shadow: rgba(255, 78, 78, 0.3);
+  --color-purple-6-shadow: rgba(175, 26, 234, 0.6);
+  --color-purple-3-shadow: rgba(223, 141, 245, 0.6);
   --grey-9: #888;
   --grey-7: var(--color-default);
 
@@ -37,10 +43,10 @@
 
 [data-theme="dark"]:root {
   --red-0: var(--red-1);
-  --red-4: rgba(255, 208, 208, .5);
-  --red-5: rgba(255, 228, 228, .15);
-  --red-5-5: rgba(255, 236, 236, .05);
-  --red-6: rgba(255, 243, 243, .2);
+  --red-4: rgba(255, 208, 208, 0.5);
+  --red-5: rgba(255, 228, 228, 0.15);
+  --red-5-5: rgba(255, 236, 236, 0.05);
+  --red-6: rgba(255, 243, 243, 0.2);
 
   --color-archive-year: #999;
   --color-default: #999;
@@ -62,7 +68,8 @@
 }
 
 /* fix astro bug https://github.com/withastro/astro/issues/9521 */
-svg:not(:root).svg-inline--fa, svg:not(:host).svg-inline--fa {
+svg:not(:root).svg-inline--fa,
+svg:not(:host).svg-inline--fa {
   overflow: visible;
   box-sizing: content-box;
 }
@@ -195,12 +202,19 @@ body {
   -webkit-text-size-adjust: 100%;
   -webkit-font-smoothing: antialiased;
   text-size-adjust: 100%;
-  transition: background 1s;
+  /* 背景色變換花 1秒，其他屬性（如文字顏色）變換花 0.3秒 */
+  transition:
+    background 1s,
+    color 0.3s;
   text-autospace: normal;
   color: var(--color-default);
-  font-family: 'LXGW WenKai Screen', -apple-system, PingFang SC,
-    Microsoft YaHei, sans-serif;
-  transition: 0.3s;
+  font-family:
+    "LXGW WenKai Screen",
+    -apple-system,
+    PingFang SC,
+    Microsoft YaHei,
+    sans-serif;
+  /* transition: 0.3s; */
   line-height: 1;
 }
 

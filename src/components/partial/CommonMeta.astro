@@ -1,5 +1,5 @@
 ---
-import { BANNER, BASE_URL } from "../../utils/config";
+import { SITE, BANNER, BASE_URL } from "../../utils/config";
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
 type Props = {
@@ -23,7 +23,8 @@ const {
   name="viewport"
   content="width=device-width, initial-scale=1, shrink-to-fit=no"
 />
-<link rel="shortcut icon" href={`${BASE_URL}/images/favicon.ico`} />
+<!-- 可能會有快取問題，可以再 ${BASE_URL}${SITE.icon} 結尾加上 ?v=2 強制 browser 重抓圖片 -->
+<link rel="shortcut icon" href={`${BASE_URL}${SITE.icon}`} />
 <meta name="generator" content={Astro.generator} />
 
 <!-- Canonical URL for SEO -->

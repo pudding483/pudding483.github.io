@@ -22,9 +22,10 @@ async function getStats() {
 const stats = await getStats();
 
 const currentPath = Astro.url.pathname;
-const normalizedPath = currentPath.endsWith('/') && currentPath.length > 1 
-  ? currentPath.slice(0, -1) 
-  : currentPath;
+const normalizedPath =
+  currentPath.endsWith("/") && currentPath.length > 1
+    ? currentPath.slice(0, -1)
+    : currentPath;
 ---
 
 <div class="sidebar-author">
@@ -50,9 +51,10 @@ const normalizedPath = currentPath.endsWith('/') && currentPath.length > 1
   {
     MENU.map((item) => {
       const itemUrl = `${BASE_URL}${item.url}`;
-      const normalizedItemUrl = itemUrl.endsWith('/') && itemUrl.length > 1 
-        ? itemUrl.slice(0, -1) 
-        : itemUrl;
+      const normalizedItemUrl =
+        itemUrl.endsWith("/") && itemUrl.length > 1
+          ? itemUrl.slice(0, -1)
+          : itemUrl;
       const isActive = normalizedPath === normalizedItemUrl;
       return (
         <div class={`sidebar-menu-link-wrap ${isActive ? "link-active" : ""}`}>
@@ -84,10 +86,9 @@ const normalizedPath = currentPath.endsWith('/') && currentPath.length > 1
       transition: opacity 0.3s;
       object-fit: cover;
       margin: 20px;
-      box-shadow: 0 0 15px 5px var(--color-red-6-shadow);
+      box-shadow: 0 0 15px 5px var(--color-purple-6-shadow); /* 修改頭像發光陰影面積 */
       will-change: transform;
       transition: 0.3s;
-
       &:hover {
         transform: scale(1.05);
       }

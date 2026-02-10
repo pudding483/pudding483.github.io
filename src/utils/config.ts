@@ -5,6 +5,7 @@ export interface SiteConfig {
   keywords: string | string[];
   author: string;
   language: string;
+  icon?: string;
 }
 
 export interface FooterConfig {
