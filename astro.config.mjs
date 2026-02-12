@@ -30,10 +30,7 @@ export default defineConfig({
   },
   markdown: {
     remarkPlugins: [remarkMath],
-    rehypePlugins: [
-      rehypeKatex,
-      //rehypeLazyLoadImage
-    ],
+    rehypePlugins: [rehypeKatex, rehypeLazyLoadImage],
     syntaxHighlight: false,
   },
   integrations: [

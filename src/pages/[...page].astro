@@ -73,6 +73,7 @@ const { page } = Astro.props;
             class:list={["post-wrap", { right: index % 2 === 1 }]}
             data-aos="fade-up"
           >
+            {/* 貼文連結是基於 post 的 id attribute */}
             <a
               class="post-link"
               href={`${BASE_URL}/blog/${post.id}`}
@@ -107,9 +108,17 @@ const { page } = Astro.props;
               <h2 class="post-title">{post.data.title}</h2>
               <article class="post-article">
                 {post.data.excerpt ? (
+                  // 這段紀錄如果有 excerpt (摘要) 欄位，就把他當成預覽
                   <p>{post.data.excerpt}</p>
                 ) : (
-                  <p>{post.body?.slice(0, 300)}</p>
+                  // 沒有 excerpt 就用 body 的前 300 字當作預覽，但可能會切到 html attribute
+                  // 所以要過濾一些 html tag，保持預設預覽的乾淨
+                  <p>
+                    {post.body
+                      ?.replace(/<style[^>]*>[\s\S]*?<\/style>/gi, "")
+                      .replace(/[#*]/g, "")
+                      .slice(0, 300)}
+                  </p>
                 )}
               </article>
             </div>

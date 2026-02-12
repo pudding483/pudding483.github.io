@@ -13,6 +13,30 @@
     margin: 16px 0;
   }
 
+  // 新增行內程式碼樣式
+  code {
+    padding: 2px 6px;
+    margin: 0 4px;
+
+    font-family: "JetBrains Mono", Consolas, monospace;
+    font-size: 0.9em;
+    
+    border-radius: 6px;
+    background-color: var(--red-5-5);
+    color: var(--red-2);
+  }
+
+  // 避免這段樣式影響到 Expressive Code 或一般的程式碼區塊
+  pre code,
+  .expressive-code code {
+    background-color: transparent;
+    padding: 0;
+    margin: 0;
+    border-radius: 0;
+    color: inherit;
+    font-size: inherit;
+  }
+
   h1,
   h2,
   h3,
@@ -57,11 +81,17 @@
   img,
   video {
     max-width: 100%;
+    width: 50%; // 預設給 50%
     height: auto;
     display: block;
-    margin: auto;
+    margin: 10px auto;
     transition: 0.3s;
     border-radius: 12px;
+
+    &[alt*="full"],
+    &[alt*="100%"] {
+      width: 100%;
+    }
   }
 
   iframe {

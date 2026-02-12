@@ -1,0 +1,11 @@
+---
+interface Props {
+  c: string; // 定義 c 必須是字串
+}
+
+const { c } = Astro.props;
+---
+
+<span style={`color: var(--${c})`}>
+  <slot />
+</span>

