@@ -10,10 +10,11 @@ const copyright = String.raw`
  \ \_\ \_\  \ \_____\  \ \_\  \ \_\ \ \_\  \ \_____\ 
   \/_/ /_/   \/_____/   \/_/   \/_/  \/_/   \/_____/ 
                                                   
-`
+`;
 ---
 
-<!-- busuanzi -->
+<!-- busuanzi -->{
+  /*
 {
   FOOTER.busuanzi && 
   <script>
@@ -22,9 +23,39 @@ const copyright = String.raw`
   })
 </script>
 }
+*/
+}
+
+<!-- add is:inline: Opt-out of Astro's script processing and bundling -->
+<script is:inline define:vars={{ busuanziEnabled: FOOTER.busuanzi }}>
+  // 將伺服器端的設定傳遞進來，在瀏覽器端判斷
+  // 條件渲染，但是避免在 Astro 的 js 表達式中直接使用 <script>
+  if (busuanziEnabled) {
+    document.addEventListener("astro:page-load", () => {
+      // 為了確保換頁時數字會更新，先檢查有沒有舊的腳本
+      const oldScript = document.getElementById("busuanzi-script");
+      if (oldScript) {
+        oldScript.remove();
+      }
+
+      // 這裡使用 Reimu 主題內建的 window.loadScript 載入腳本
+      // 這樣寫編輯器就能正確識別這是 js code，不會報錯
+      if (window.loadScript) {
+        window.loadScript(
+          "https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js",
+          "busuanzi-script",
+        );
+      }
+    });
+  }
+</script>
 
 <!-- aos -->
 <script>
+  // Animate On Scroll ，為了配合 Astro 的 View Transitions
+  // 參考 AOS 官方文件的 Single Page Application (SPA) 部份
+  // 因為 Astro 的 View Transitions 會讓頁面不完全重新載入
+  // 所以需要在每次頁面切換後重新初始化 AOS。
   import AOS from "@reimujs/aos";
   const aosInit = () => {
     AOS.init({
@@ -37,12 +68,13 @@ const copyright = String.raw`
   aosInit();
   document.addEventListener("astro:after-swap", aosInit);
 </script>
-<!-- ThemeToogle -->
+
+<!-- ThemeToggle -->
 <script>
   // prevent flash when using view transitions in astro
   const initColorMode = () => {
     const storedTheme = JSON.parse(
-      window.localStorage.getItem("theme") ?? '"auto"'
+      window.localStorage.getItem("theme") ?? '"auto"',
     );
     let presetTheme;
     if (storedTheme === "auto") {
@@ -66,8 +98,8 @@ const copyright = String.raw`
   // Runs on view transitions navigation
   document.addEventListener("astro:after-swap", initColorMode);
 </script>
-<!-- Firework -->
-{firework && firework.enable && (
+
+<!-- Firework --><!-- {firework && firework.enable && (
   <>
     <script>
       function initFirework() {
@@ -97,9 +129,58 @@ const copyright = String.raw`
       window.__FIREWORK_CONFIG__ = firework;
     </script>
   </>
-)}
+)} -->
+<script is:inline define:vars={{ firework }}>
+  window.__FIREWORK_CONFIG__ = firework || null;
+</script>
+
+<script>
+  function initFirework() {
+    const config = window.__FIREWORK_CONFIG__;
+
+    // 如果沒有設定檔，或者 enable 為 false，直接結束函式，不執行後續
+    if (!config || !config.enable) {
+      return;
+    }
+
+    // 手機版檢查
+    if (
+      config.disable_on_mobile &&
+      ("ontouchstart" in window || navigator.maxTouchPoints > 0)
+    ) {
+      return;
+    }
+
+    // 只有通過上面檢查，才會真的去下載煙火套件 (Dynamic Import)
+    import("mouse-firework")
+      .then((mod) => {
+        const fire = mod.default;
+        // TypeScript 會認為 config.options 是普通的 key-value ，所以要告訴他型別
+        // Parameters<> 會回傳 fire 這個函式的所有參數，型別是 tuple
+        fire(config.options as Parameters<typeof fire>[0]);
+      })
+      .catch((e) => {
+        console.warn("Failed to load mouse-firework", e);
+      });
+  }
+
+  // 執行初始化
+  initFirework();
+
+  // 配合 View Transitions 換頁重新觸發
+  document.addEventListener("astro:page-load", () => {
+    initFirework();
+  });
+</script>
+
 <!-- Copyright -->
 <script is:inline define:vars={{ copyright, version: packageData.version }}>
-  console.log(String.raw`%c ${copyright}`,'color: #ff5252;')
-  console.log('%c Theme.Reimu v' + `${version}` + ' %c https://github.com/D-Sketon/astro-theme-reimu ', 'color: white; background: #ff5252; padding:5px 0;', 'padding:4px;border:1px solid #ff5252;')
+  console.log(String.raw`%c ${copyright}`, "color: #ff5252;");
+  console.log(
+    "%c Theme.Reimu v" +
+      `${version}` +
+      " %c https://github.com/D-Sketon/astro-theme-reimu ",
+    "color: white; background: #ff5252; padding:5px 0;",
+    "padding:4px;border:1px solid #ff5252;",
+  );
 </script>

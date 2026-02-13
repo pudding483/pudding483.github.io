@@ -11,14 +11,20 @@ const totalmin2read = await totalReadingTime();
 
 <footer id="footer">
   <div style="width: 100%; overflow: hidden">
+    {/* 頁底會不斷循環的跑馬燈分隔線 */}
     <div class="footer-line"></div>
   </div>
   <div class="outer">
     <div id="footer-info" class="inner">
+      {/* 劃分一個 div 區塊給 copyright 、建置時間、網頁標誌及作者 */}
       <div>
         <Icon name="fa6-regular:copyright" />
         &thinsp; {/* 用窄空格，盡量不改底下的 css ，不然還要多用容器處理 */}
-        {FOOTER.since}
+        {
+          // 起始時間，正常應該是 number 型別
+          // 為了顯示月份，在 utils/config.ts 中改成 string 型別
+          FOOTER.since
+        }
         {
           // 用三元運算子判斷是否顯示年份範圍，範例：parseInt("2026/02") = 2026
           parseInt(String(FOOTER.since)) < new Date().getFullYear()
@@ -26,10 +32,13 @@ const totalmin2read = await totalReadingTime();
             : " ~ Now"
         }
         &nbsp;
+        {/* 這個 class 的圖片在 style lang ... 那邊有宣告 */}
         <span class="footer-info-sep"></span>
         {SITE.author || SITE.title}
       </div>
       {
+        // powered by 採用條件渲染
+        // JS 表達式的 short-circuit evaluation ，所以當渲染後也是 div 區塊
         FOOTER.powered && (
           <div>
             {__("powered_by")}&nbsp;
@@ -52,34 +61,77 @@ const totalmin2read = await totalReadingTime();
         )
       }
       {
+        // // count 採用條件渲染，顯示總字數和總閱讀時間
+        // FOOTER.count && (
+        //   <div>
+        //     <Icon name="fa6-solid:paintbrush" />
+        //     &nbsp;
+        //     {totalcount}
+        //     &nbsp;|&nbsp;
+        //     <Icon name="fa6-solid:mug-saucer" />
+        //     &nbsp;
+        //     {totalmin2read}
+        //   </div>
+        // )
+
+        // count 採用條件渲染
         FOOTER.count && (
-          <div>
-            <Icon name="fa6-solid:paintbrush" />
-            &nbsp;
-            {totalcount}
-            &nbsp;|&nbsp;
-            <Icon name="fa6-solid:mug-saucer" />
-            &nbsp;
-            {totalmin2read}
+          // 新增 metric-row 管理左右兩側的 section ， metric : 度量、指標
+          // 把總字數和總閱讀時間分成左右兩邊，這個 div 本身會受到置中影響
+          <div class="footer-metric-row">
+            <div class="footer-metric-left">
+              <Icon name="fa6-solid:paintbrush" />
+              &nbsp;
+              {totalcount}
+            </div>
+            <div class="footer-metric-sep">|</div>
+            <div class="footer-metric-right">
+              <Icon name="fa6-solid:mug-saucer" />
+              &nbsp;
+              {totalmin2read}
+            </div>
           </div>
         )
       }
       {
+        // FOOTER.busuanzi && (
+        //   <div>
+        //     <Icon name="fa6-solid:eye" />
+        //     &nbsp;
+        //     <span id="busuanzi_container_site_pv">
+        //       {__("busuanzi.pv")}&nbsp;
+        //       <span id="busuanzi_value_site_pv" />
+        //     </span>
+        //     &nbsp;|&nbsp;
+        //     <Icon name="fa6-solid:user" />
+        //     &nbsp;
+        //     <span id="busuanzi_container_site_uv">
+        //       {__("busuanzi.uv")}&nbsp;
+        //       <span id="busuanzi_value_site_uv" />
+        //     </span>
+        //   </div>
+        // )
+
         FOOTER.busuanzi && (
-          <div>
-            <Icon name="fa6-solid:eye" />
-            &nbsp;
-            <span id="busuanzi_container_site_pv">
-              {__("busuanzi.pv")}&nbsp;
-              <span id="busuanzi_value_site_pv" />
-            </span>
-            &nbsp;|&nbsp;
-            <Icon name="fa6-solid:user" />
-            &nbsp;
-            <span id="busuanzi_container_site_uv">
-              {__("busuanzi.uv")}&nbsp;
-              <span id="busuanzi_value_site_uv" />
-            </span>
+          // 新增 metric-row 管理左右兩側的 section
+          <div class="footer-metric-row">
+            <div class="footer-metric-left">
+              <Icon name="fa6-solid:eye" />
+              &nbsp;
+              <span id="busuanzi_container_site_pv">
+                {__("busuanzi.pv")}&nbsp;
+                <span id="busuanzi_value_site_pv" />
+              </span>
+            </div>
+            <div class="footer-metric-sep">|</div>
+            <div class="footer-metric-right">
+              <Icon name="fa6-solid:user" />
+              &nbsp;
+              <span id="busuanzi_container_site_uv">
+                {__("busuanzi.uv")}&nbsp;
+                <span id="busuanzi_value_site_uv" />
+              </span>
+            </div>
           </div>
         )
       }
@@ -138,6 +190,7 @@ const totalmin2read = await totalReadingTime();
   </div>
 </footer>
 
+{/* 定義變數為 .footer-info-sep 會用到的圖標 */}
 <style lang="stylus" define:vars={{ imageUrl: 'url('+`${BASE_URL}/images/taichi.png`+')' }}>
   #footer {
     background: linear-gradient(
@@ -187,7 +240,8 @@ const totalmin2read = await totalReadingTime();
     line-height: 1.67;
     font-size: 0.85em;
 
-    div {
+    > div { 
+      // 使用子代選擇器 > ，不然會影響到 .footer-metric-row 的子元素
       margin: 8px 0;
       display: flex;
       justify-content: center;
@@ -195,11 +249,40 @@ const totalmin2read = await totalReadingTime();
     }
   }
 
+  // 利用 metric 這個 class 管理左右兩側的 section
+  // 因為把空間撐滿了，後續只要子元素都設定 flex: 1 就會每個子元素空間都相同
+  .footer-metric-row {
+    width: 100%;
+  }
+
+  .footer-metric-left {
+    flex: 1;              /* 佔據剩餘空間的一半 */
+    display: flex;
+    justify-content: flex-end; /* 內容靠右對齊 (向中線靠攏) */
+    align-items: center;
+  }
+
+  .footer-metric-right {
+    flex: 1;              /* 佔據剩餘空間的一半 */
+    display: flex;
+    justify-content: flex-start; /* 內容靠左對齊 (向中線靠攏) */
+    align-items: center;
+  }
+
+  .footer-metric-sep {
+    margin: 0 15px;
+    opacity: 0.5;
+  }
+
+  // footer 中的圖標
   .footer-info-sep {
     width: 24px;
     height: 24px;
     opacity: 0.8;
+    // 利用這種方式把圖片的 url (javascript) 放入 css
+    // 定義變數在 style lang ... define:vars= ...
     background: var(--imageUrl) no-repeat center / 80%;
+
     animation: rotate-all 3s infinite;
     animation-timing-function: linear;
   }

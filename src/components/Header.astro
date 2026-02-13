@@ -36,6 +36,7 @@ const sortedPosts = posts.sort(
 <div id="header-nav">
   <nav id="main-nav">
     {
+      // 檢查 MENU ，有就迭代出按鈕和連結 (Header 上面的)
       MENU.map((item) => (
         <HeaderLink href={`${BASE_URL}${item.url}`} aria-label={item.name}>
           {__(item.name)}
@@ -51,6 +52,8 @@ const sortedPosts = posts.sort(
       <Icon name="fa6-solid:bars" size={14} />
     </span>
   </nav>
+
+  {/* RSS, Search button, Theme button 的導覽列 */}
   <nav id="sub-nav" aria-label="Secondary navigation">
     <RssBtn client:load url={BASE_URL} className="nav-icon" />
     <SearchBtn client:load className="nav-icon" />

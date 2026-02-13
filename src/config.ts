@@ -4,7 +4,7 @@ export default {
     subtitle: "483 的小天地",
     description: "CTF player | 象棋愛好者",
     keywords: "483, blog, astro, theme",
-    author: "483",
+    author: "483", // 影響 Sidebar 中的名稱(有大頭貼的)， Footer 中的版權聲明
     language: "zh-TW",
     icon: "/images/favicon.ico",
   },

@@ -164,6 +164,7 @@ const { page } = Astro.props;
     />
   </section>
   <!-- Footer -->
+  {/* 直接使用 Footer component ，所以 ...page 沒有相關邏輯 */}
   <Footer slot="footer" />
 </BaseLayout>
 
@@ -283,6 +284,7 @@ const { page } = Astro.props;
     white-space: pre-line; // 保留換行符號
   }
 
+  // 文章預覽封面
   .post-cover {
     width: 40%;
     position: relative;
