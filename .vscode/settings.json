@@ -5,5 +5,15 @@
     "astro", // Enable .astro
     "typescript", // Enable .ts
     "typescriptreact" // Enable .tsx
-  ]
+  ],
+
+  // 讓插件支援 MDX 和 Astro 內的字串路徑補全
+  "path-autocomplete.triggerOutsideStrings": true,
+  "path-autocomplete.enableTransformer": true,
+
+  // 明確定義路徑映射 (這是關鍵，它不一定會乖乖讀 tsconfig)
+  "path-autocomplete.pathMappings": {
+    "@assets": "${folder}/src/assets",
+    "@": "${folder}/src"
+  }
 }

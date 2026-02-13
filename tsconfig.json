@@ -6,9 +6,10 @@
     "jsxImportSource": "react",
     "types": ["vite-plugin-font/src/font"],
 
+    // 設定路徑別名
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"], // 設定 @ 代表 src/
+      "@/*": ["src/*"], // 設定 @/* 代表 src/*
       "@assets/*": ["src/assets/*"] // 設定 @assets 代表 src/assets/
     }
   },

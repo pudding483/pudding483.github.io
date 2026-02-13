@@ -111,13 +111,42 @@ const { page } = Astro.props;
                   // 這段紀錄如果有 excerpt (摘要) 欄位，就把他當成預覽
                   <p>{post.data.excerpt}</p>
                 ) : (
-                  // 沒有 excerpt 就用 body 的前 300 字當作預覽，但可能會切到 html attribute
-                  // 所以要過濾一些 html tag，保持預設預覽的乾淨
+                  // 沒有 excerpt 就用 body 的前 300 字當作預覽
+                  // 但可能會切到 html attribute, import, markdown 語法
+                  // 所以寫 filter 過濾
                   <p>
                     {post.body
-                      ?.replace(/<style[^>]*>[\s\S]*?<\/style>/gi, "")
-                      .replace(/[#*]/g, "")
-                      .slice(0, 300)}
+                      // 過濾 import
+                      ?.replace(/import\s+.*?from\s+['"].*?['"];?/g, "\n")
+
+                      // 過濾註解，變成換行
+                      ?.replace(/\/\/.*$/gm, "\n")
+
+                      // 過濾 HTML tag
+                      ?.replace(/<[^>]+>/g, " ")
+
+                      // 過濾 markdown 圖片語法，變成換行
+                      ?.replace(/!\[.*?\]\(.*?\)/g, "\n")
+
+                      // 過濾 markdown 標題
+                      ?.replace(/^#+\s+.*$/gm, "")
+
+                      // 過濾 markdown 程式碼區塊和行內程式碼
+                      ?.replace(/```[\s\S]*?```|`.*?`/g, "")
+
+                      // 過濾 markdown 粗體
+                      ?.replace(/[*]/g, " ")
+
+                      // 過濾 HTML entity
+                      ?.replace(/&[a-z0-9]+;/g, " ")
+
+                      // 先過濾每一行頭尾的空白，但換成換行
+                      ?.replace(/^\s+|\s+$/gm, "\n")
+
+                      // 再把多餘的空行過濾掉，替換成換行
+                      ?.replace(/\n\s*\n/g, "\n")
+                      ?.trim()
+                      ?.slice(0, 300)}
                   </p>
                 )}
               </article>
@@ -236,10 +265,12 @@ const { page } = Astro.props;
     }
   }
 
+  // 文章預覽區塊
   .post-article {
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 3;
+
     overflow: hidden;
     line-height: 32px;
     font-size: 15px;
@@ -248,6 +279,8 @@ const { page } = Astro.props;
     a {
       color: var(--color-link);
     }
+
+    white-space: pre-line; // 保留換行符號
   }
 
   .post-cover {
