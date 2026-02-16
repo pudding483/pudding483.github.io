@@ -7,24 +7,25 @@ import "../styles/markdown.stylus";
 
 import { BASE_URL } from "../utils/config";
 import { __ } from "../utils/i18n"; // 用於多語言
+
 import BaseLayout from "../layouts/BaseLayout.astro";
-import Footer from "../components/Footer.astro";
+import HeaderTitle from "../components/partial/header/HeaderTitle.astro";
 import DateComponent from "../components/post/Date.astro"; // 改名避免衝突
 import Comment from "../components/post/Comment.astro";
-import HeaderTitle from "../components/partial/header/HeaderTitle.astro";
+import Footer from "../components/Footer.astro";
 
 import FriendCard from "../components/mdx/FriendCard.astro";
 
 const pubDate = new Date(); // 或者固定一個日期
-// const description = "我的朋友們"; for SEO, but due to i18n, shelve it for now
+// const description = "我的朋友們"; for SEO, but due to i18n, shelve it
 ---
 
-<BaseLayout
-  title={__("friends")}
-  isPost={true}
-  toc={false}
->
-  <HeaderTitle title={__("friends_title")} url={`${BASE_URL}/friends`} slot="header" />
+<BaseLayout title={__("friends")} isPost={true} toc={false}>
+  <HeaderTitle
+    title={__("friends_title")}
+    url={`${BASE_URL}/friends`}
+    slot="header"
+  />
 
   <section id="main" aria-label="Main content">
     <article
@@ -42,13 +43,11 @@ const pubDate = new Date(); // 或者固定一個日期
         <div class="hr-line"></div>
 
         <div class="article-entry" itemprop="articleBody">
-          
           <p>歡迎來到我的朋友圈，這裡記錄了一些友站連結。</p>
-          
-          <FriendCard />
 
+          <FriendCard />
         </div>
-        
+
         <slot name="footer" />
       </div>
     </article>
@@ -73,7 +72,9 @@ const pubDate = new Date(); // 或者固定一個日期
     background-repeat: repeat-x;
     filter: drop-shadow(0px 0px 2px var(--red-1));
     transition: opacity 0.3s;
-    &:hover { opacity: 0.5; }
+    &:hover {
+      opacity: 0.5;
+    }
   }
 
   .article-inner {

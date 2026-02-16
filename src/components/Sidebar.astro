@@ -25,16 +25,18 @@ const { isPost = false, headings = [], toc = true } = Astro.props;
         aos={"fade-up"}
       />
     </div>
+
     <Widget isPost={isPost} />
   </div>
 </aside>
 
-<style lang="stylus">
+<style>
   #sidebar {
     display: none;
   }
 
-  :global(.sidebar-left), :global(.sidebar-right) {
+  :global(.sidebar-left),
+  :global(.sidebar-right) {
     #sidebar {
       display: block;
 
@@ -75,7 +77,9 @@ const { isPost = false, headings = [], toc = true } = Astro.props;
     }
   }
 
+  /* 從 sidebar 頂部(大頭貼) 到底部(標籤區塊) */
   .sidebar-wrapper-container {
+    /* background: red; */
     display: flex;
     flex-direction: column;
 

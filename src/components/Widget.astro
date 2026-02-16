@@ -24,20 +24,16 @@ const { isPost = false } = Astro.props;
   !isPost && (
     <div class="sidebar-widget">
       {widgetMap.map(({ name, component: Component }) =>
-        WIDGETS.includes(name) ? <Component /> : null
+        WIDGETS.includes(name) ? <Component /> : null,
       )}
     </div>
   )
 }
 
-<style lang="stylus" is:global>
+<style is:global>
   .tagcloud a {
     display: inline-block;
     margin: 5px 5px 0 0;
-  }
-
-  [data-theme='dark'] .widget-wrap {
-    box-shadow: var(--shadow-card);
   }
 
   .widget-wrap {
@@ -47,7 +43,13 @@ const { isPost = false } = Astro.props;
     transition: 0.3s;
   }
 
+  [data-theme="dark"] .widget-wrap {
+    /* background: red; 測試用 */
+    box-shadow: var(--shadow-card);
+  }
+
   .widget-wrapper {
+    /* background: red; 測試用 */
     transition: 0.3s;
 
     .aos-animate {
@@ -67,6 +69,8 @@ const { isPost = false } = Astro.props;
   }
 
   .widget {
+    /* background: blue; 測試用 */
+
     color: var(--grey-7);
     padding: 4px 20px 20px;
 
@@ -77,7 +81,8 @@ const { isPost = false } = Astro.props;
       white-space: nowrap;
     }
 
-    a, span {
+    a,
+    span {
       color: var(--color-link);
       text-decoration: none;
       opacity: 0.9;
@@ -93,8 +98,12 @@ const { isPost = false } = Astro.props;
       margin-left: 5px;
     }
 
-    ul, ol, dl {
-      ul, ol, dl {
+    ul,
+    ol,
+    dl {
+      ul,
+      ol,
+      dl {
         margin-left: 16px;
         list-style: none;
       }
@@ -105,7 +114,7 @@ const { isPost = false } = Astro.props;
       line-height: normal;
 
       &:before {
-        content: '';
+        content: "";
         display: inline-block;
         width: 5px;
         height: 10px;

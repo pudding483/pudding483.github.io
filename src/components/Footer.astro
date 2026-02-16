@@ -2,14 +2,18 @@
 import { Icon } from "astro-icon/components";
 
 import { totalCount, totalReadingTime } from "../utils/wordCount";
-import { SITE, FOOTER, BASE_URL } from "../utils/config";
+import { SITE, BOTTOM_BANNER, FOOTER, BASE_URL } from "../utils/config";
 import { __ } from "../utils/i18n";
 
 const totalcount = await totalCount();
 const totalmin2read = await totalReadingTime();
+
+// 用來控制底部的 banner (BOTTOM_BANNER)，這裡準備把 BOTTOM_BANNER.src 單獨拿出來寫 if
+const footerWithBottomBanner =
+  BOTTOM_BANNER.enable && BOTTOM_BANNER.src ? "has-bottom-banner" : "";
 ---
 
-<footer id="footer">
+<footer id="footer" class={footerWithBottomBanner}>
   <div style="width: 100%; overflow: hidden">
     {/* 頁底會不斷循環的跑馬燈分隔線 */}
     <div class="footer-line"></div>
@@ -61,19 +65,6 @@ const totalmin2read = await totalReadingTime();
         )
       }
       {
-        // // count 採用條件渲染，顯示總字數和總閱讀時間
-        // FOOTER.count && (
-        //   <div>
-        //     <Icon name="fa6-solid:paintbrush" />
-        //     &nbsp;
-        //     {totalcount}
-        //     &nbsp;|&nbsp;
-        //     <Icon name="fa6-solid:mug-saucer" />
-        //     &nbsp;
-        //     {totalmin2read}
-        //   </div>
-        // )
-
         // count 採用條件渲染
         FOOTER.count && (
           // 新增 metric-row 管理左右兩側的 section ， metric : 度量、指標
@@ -94,24 +85,6 @@ const totalmin2read = await totalReadingTime();
         )
       }
       {
-        // FOOTER.busuanzi && (
-        //   <div>
-        //     <Icon name="fa6-solid:eye" />
-        //     &nbsp;
-        //     <span id="busuanzi_container_site_pv">
-        //       {__("busuanzi.pv")}&nbsp;
-        //       <span id="busuanzi_value_site_pv" />
-        //     </span>
-        //     &nbsp;|&nbsp;
-        //     <Icon name="fa6-solid:user" />
-        //     &nbsp;
-        //     <span id="busuanzi_container_site_uv">
-        //       {__("busuanzi.uv")}&nbsp;
-        //       <span id="busuanzi_value_site_uv" />
-        //     </span>
-        //   </div>
-        // )
-
         FOOTER.busuanzi && (
           // 新增 metric-row 管理左右兩側的 section
           <div class="footer-metric-row">
@@ -191,16 +164,35 @@ const totalmin2read = await totalReadingTime();
 </footer>
 
 {/* 定義變數為 .footer-info-sep 會用到的圖標 */}
-<style lang="stylus" define:vars={{ imageUrl: 'url('+`${BASE_URL}/images/taichi.png`+')' }}>
+<style
+  define:vars={{ imageUrl: "url(" + `${BASE_URL}/images/taichi.png` + ")" }}
+>
   #footer {
+    /* 原始有背景漸層顏色的 footer */
+    /*
     background: linear-gradient(
       to top,
       var(--color-footer-background) 50%,
       transparent
     );
+    */
+
+    /* 修改為背景透明，為了實作底部大圖讓圖能夠被看到 */
+    background: transparent;
+
+    /* 如果圖片是 z-index: -1 或 0，文字要是 z-index: 1 才能被選取 */
+    position: relative;
+    z-index: 1; /* 確保 footer 的內容層級比背景圖高 */
+
     padding: 40px 0 20px;
     color: var(--grey-9);
     transition: 1s;
+
+    /* 當 footer 擁有這個 class 時，改變內部元素的行為 */
+    /* 這裡我們只定義 "狀態"，具體改變誰，寫在下面 */
+    &.has-bottom-banner {
+      /* 這裡留空，或者可以用來改變 footer 自己的屬性 */
+    }
 
     &:hover {
       .footer-line {
@@ -226,22 +218,33 @@ const totalmin2read = await totalReadingTime();
   }
 
   .footer-line {
-    margin: 20px 0 40px;
-    opacity: 0.3;
     width: 200%;
     height: 10px;
-    background: linear-gradient(to left, var(--red-1) 50%, transparent 0%) repeat-x 0 0 / 100px 10px;
-    transition: opacity 0.3s;
+    margin: 20px 0 40px;
+    opacity: 0.3;
+
+    background: linear-gradient(to left, var(--red-1) 50%, transparent 0%)
+      repeat-x 0 0 / 100px 10px;
+
+    /* 透明度有變化時，耗費 0.3s ，margin 發生變化時 */
+    transition:
+      opacity 0.3s,
+      margin 0.5s ease;
     animation: transform-all 3s linear infinite;
-    filter: drop-shadow(0px 0px 2px var(--red-1));
+    filter: drop-shadow(0px 0px 2px var(--red-1)); /* 發光效果 */
+  }
+
+  /* 當底部有 BOTTOM_BANNER 時，加大間距 */
+  #footer.has-bottom-banner .footer-line {
+    margin: 120px 0 80px;
   }
 
   #footer-info {
     line-height: 1.67;
     font-size: 0.85em;
 
-    > div { 
-      // 使用子代選擇器 > ，不然會影響到 .footer-metric-row 的子元素
+    > div {
+      /* 使用子代選擇器 > ，不然會影響到 .footer-metric-row 的子元素 */
       margin: 8px 0;
       display: flex;
       justify-content: center;
@@ -249,21 +252,21 @@ const totalmin2read = await totalReadingTime();
     }
   }
 
-  // 利用 metric 這個 class 管理左右兩側的 section
-  // 因為把空間撐滿了，後續只要子元素都設定 flex: 1 就會每個子元素空間都相同
+  /* 利用 metric 這個 class 管理左右兩側的 section */
+  /* 因為把空間撐滿了，後續只要子元素都設定 flex: 1 就會每個子元素空間都相同 */
   .footer-metric-row {
     width: 100%;
   }
 
   .footer-metric-left {
-    flex: 1;              /* 佔據剩餘空間的一半 */
+    flex: 1; /* 佔據剩餘空間的一半 */
     display: flex;
     justify-content: flex-end; /* 內容靠右對齊 (向中線靠攏) */
     align-items: center;
   }
 
   .footer-metric-right {
-    flex: 1;              /* 佔據剩餘空間的一半 */
+    flex: 1; /* 佔據剩餘空間的一半 */
     display: flex;
     justify-content: flex-start; /* 內容靠左對齊 (向中線靠攏) */
     align-items: center;
@@ -274,13 +277,13 @@ const totalmin2read = await totalReadingTime();
     opacity: 0.5;
   }
 
-  // footer 中的圖標
+  /* footer 中的圖標 */
   .footer-info-sep {
     width: 24px;
     height: 24px;
     opacity: 0.8;
-    // 利用這種方式把圖片的 url (javascript) 放入 css
-    // 定義變數在 style lang ... define:vars= ...
+    /* 利用這種方式把圖片的 url (javascript) 放入 css */
+    /* 定義變數在 style lang ... define:vars= ... */
     background: var(--imageUrl) no-repeat center / 80%;
 
     animation: rotate-all 3s infinite;

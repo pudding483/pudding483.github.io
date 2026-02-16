@@ -1,3 +1,7 @@
+// 1. export interface ...    定義形狀/藍圖
+// 2. import ...              引入原始資料
+// 3. const typedConfig = ... 把原始資料套用到藍圖
+// 4. export const ...        輸出給其他檔案使用
 export interface SiteConfig {
   title: string;
   subtitle: string;
@@ -6,6 +10,35 @@ export interface SiteConfig {
   author: string;
   language: string;
   icon?: string;
+}
+
+export interface SidebarConfig {
+  position: "left" | "right";
+  avatar: string;
+}
+
+export interface MenuConfig {
+  name: string;
+  url: string;
+}
+
+export interface BannerSrcSetConfig {
+  enable: boolean;
+  srcset: {
+    src: string;
+    media: string;
+  }[];
+}
+
+// 這裡新增一個專門控制翻譯功能的 interface，讓 config.ts 的結構更清晰
+export interface TranslationConfig {
+  enable: boolean;
+}
+
+// 新增底部大圖，其為可選
+export interface BottomBannerConfig {
+  enable: boolean;
+  src: string;
 }
 
 export interface FooterConfig {
@@ -151,29 +184,6 @@ export interface PreloaderConfig {
   rotate: boolean;
 }
 
-export interface SidebarConfig {
-  position: "left" | "right";
-  avatar: string;
-}
-
-export interface MenuConfig {
-  name: string;
-  url: string;
-}
-
-export interface BannerSrcSetConfig {
-  enable: boolean;
-  srcset: {
-    src: string;
-    media: string;
-  }[];
-}
-
-// 這裡新增一個專門控制翻譯功能的 interface，讓 config.ts 的結構更清晰
-export interface TranslationConfig {
-  enable: boolean;
-}
-
 export interface FireworkConfig {
   enable: boolean;
   disable_on_mobile: boolean;
@@ -208,9 +218,17 @@ import config from "../config";
 
 const typedConfig = config as {
   site: SiteConfig;
+  sidebar: SidebarConfig;
+  widgets: string[];
+  menu: MenuConfig[];
+  banner: string;
+  banner_srcset: BannerSrcSetConfig;
+  translation: TranslationConfig; // 新增這個區塊，專門控制翻譯功能
+  bottom_banner: BottomBannerConfig;
   footer: FooterConfig;
-  analytics: AnalyticsConfig;
+
   social: SocialConfig;
+  analytics: AnalyticsConfig;
   valine: ValineConfig;
   waline: WalineConfig;
   gitalk: GitalkConfig;
@@ -218,17 +236,13 @@ const typedConfig = config as {
   utterances: UtterancesConfig;
   twikoo: TwikooConfig;
   disqus: DisqusConfig;
+
   friend: FriendConfig[];
   copyright: CopyrightConfig;
   preloader: PreloaderConfig;
-  sidebar: SidebarConfig;
-  menu: MenuConfig[];
-  banner: string;
-  banner_srcset: BannerSrcSetConfig;
-  translation: TranslationConfig; // 新增這個區塊，專門控制翻譯功能
+
   firework: FireworkConfig;
   home_categories: HomeCategoriesConfig;
-  widgets: string[];
   triangle_badge: TriangleBadgeConfig;
   outdate: OutdateConfig;
   share: string[];
@@ -236,9 +250,17 @@ const typedConfig = config as {
 };
 
 export const SITE = typedConfig.site;
+export const SIDEBAR = typedConfig.sidebar;
+export const WIDGETS = typedConfig.widgets;
+export const MENU = typedConfig.menu;
+export const BANNER = typedConfig.banner;
+export const BANNER_SRCSET = typedConfig.banner_srcset;
+export const TRANSLATION = typedConfig.translation; // 新增這個區塊，專門控制翻譯功能
+export const BOTTOM_BANNER = typedConfig.bottom_banner; // 新增底部大圖，可選
 export const FOOTER = typedConfig.footer;
-export const ANALYTICS = typedConfig.analytics;
+
 export const SOCIAL = typedConfig.social;
+export const ANALYTICS = typedConfig.analytics;
 export const VALINE = typedConfig.valine;
 export const WALINE = typedConfig.waline;
 export const GITALK = typedConfig.gitalk;
@@ -246,15 +268,11 @@ export const GISCUS = typedConfig.giscus;
 export const UTTERANCES = typedConfig.utterances;
 export const TWIKOO = typedConfig.twikoo;
 export const DISQUS = typedConfig.disqus;
+
 export const FRIEND = typedConfig.friend;
 export const COPYRIGHT = typedConfig.copyright;
 export const PRELOADER = typedConfig.preloader;
-export const SIDEBAR = typedConfig.sidebar;
-export const WIDGETS = typedConfig.widgets;
-export const MENU = typedConfig.menu;
-export const BANNER = typedConfig.banner;
-export const BANNER_SRCSET = typedConfig.banner_srcset;
-export const Translation = typedConfig.translation; // 新增這個區塊，專門控制翻譯功能
+
 export const FIREWORK = typedConfig.firework;
 export const HOME_CATEGORIES = typedConfig.home_categories;
 export const TRIANGLE_BADGE = typedConfig.triangle_badge;

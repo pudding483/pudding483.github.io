@@ -3,18 +3,20 @@ import { getCollection } from "astro:content";
 import type { CollectionEntry } from "astro:content";
 import { Icon } from "astro-icon/components";
 
-import BaseLayout from "../layouts/BaseLayout.astro";
 import { SITE, BASE_URL, HOME_CATEGORIES, BANNER } from "../utils/config";
-import randomCover from "../utils/randomCover";
+import { formatDate } from "../utils/formatDate";
+import { urlFor } from "../utils/urlFor";
 import { _p } from "../utils/i18n";
 import { wordCount, readingTime } from "../utils/wordCount";
-import Footer from "../components/Footer.astro";
-import Pagination from "../components/Pagination.astro";
+
+import BaseLayout from "../layouts/BaseLayout.astro";
+import randomCover from "../utils/randomCover";
 import HeaderTitle from "../components/partial/header/HeaderTitle.astro";
 import HeaderSubTitle from "../components/partial/header/HeaderSubTitle.astro";
 import HomeCategories from "../components/HomeCategories.astro";
-import { formatDate } from "../utils/formatDate";
-import { urlFor } from "../utils/urlFor";
+import Pagination from "../components/Pagination.astro";
+import BottomBackground from "../components/BottomBackground.astro"; // 用來實作底部大圖
+import Footer from "../components/Footer.astro";
 
 type Props = {
   page: {
@@ -34,7 +36,7 @@ export async function getStaticPaths({ paginate }: { paginate: Function }) {
     (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
   );
   return paginate(sortedPosts, {
-    pageSize: 10,
+    pageSize: 5, // 只顯示 5 篇，因為左邊的 Sidebar 沒有 sticky
   });
 }
 const { page } = Astro.props;
@@ -68,17 +70,18 @@ const { page } = Astro.props;
     {
       page.data.map((post, index) => (
         <div class="post-wrapper">
-          {/* 利用 { right: index % 2 === 1 } ，一個動態 class 來實作左圖右文、右圖左文 */}
+          {/* 利用 { right: index % 2 === 1 } 這種動態 class 來實作左圖右文、右圖左文 */}
           <div
             class:list={["post-wrap", { right: index % 2 === 1 }]}
             data-aos="fade-up"
           >
-            {/* 貼文連結是基於 post 的 id attribute */}
+            {/* 文章連結是基於 post 的 id attribute */}
             <a
               class="post-link"
               href={`${BASE_URL}/blog/${post.id}`}
               aria-label={post.id}
             />
+            {/* 這段是文章的圖，不是背景大圖 */}
             <div class:list={["post-cover", { right: index % 2 === 1 }]}>
               {/* urlFor 定義在 utils ，保持模板 .astro 的乾淨 */}
               <img
@@ -87,6 +90,7 @@ const { page } = Astro.props;
                 alt={post.data.title}
               />
             </div>
+            {/* 文章資訊 */}
             <div class="post-info">
               <div class="post-meta">
                 <span>
@@ -105,7 +109,9 @@ const { page } = Astro.props;
                   {_p("post.time", readingTime(post.body || ""))}
                 </span>
               </div>
+
               <h2 class="post-title">{post.data.title}</h2>
+
               <article class="post-article">
                 {post.data.excerpt ? (
                   // 這段紀錄如果有 excerpt (摘要) 欄位，就把他當成預覽
@@ -163,58 +169,79 @@ const { page } = Astro.props;
       lastPage={page.lastPage}
     />
   </section>
+
   <!-- Footer -->
-  {/* 直接使用 Footer component ，所以 ...page 沒有相關邏輯 */}
-  <Footer slot="footer" />
+  <div slot="footer" class="footer-bg-wrapper">
+    <BottomBackground />
+    {/* 直接使用 Footer component ，所以 [...page] 沒有相關邏輯 */}
+    {/* 外層已經有 footer 這個 slot 了，內層就不用了 */}
+    <!-- <Footer slot="footer" /> -->
+    <Footer />
+  </div>
 </BaseLayout>
 
 <style lang="stylus">
+  // 確保選取到基於 post.id 的 貼文連結
+  // 效果：在卡片上方蓋一層透明的「點擊區」，讓使用者點擊卡片任何位置都能跳轉
   :global(.post-link) {
-    position: absolute;
-    top: 0;
-    left: 0;
     width: 100%;
     height: 100%;
+
+    top: 0;
+    left: 0;
+
+    position: absolute;
   }
 
+  // 每一張 post (的 container)
   .post-wrap {
     width: 100%;
     height: 232px;
+
     margin-bottom: 32px;
-    position: relative;
+
     border-radius: 12px;
     background: var(--color-wrap);
+
+    position: relative; // 用來實作 post-link 中的「整張卡片都可以被點擊查看」
+
     display: flex;
-    flex-direction: row;
+    flex-direction: row; // 讓「圖片」和「文字」橫向排列
     transition: 0.3s;
 
+    // 如果有 .right 的 class 就反過來
     &.right {
       flex-direction: row-reverse;
     }
 
     @media screen and (max-width: 767px) {
-      flex-direction: column;
       height: 400px;
       margin-bottom: 20px;
+
+      flex-direction: column;
+      
       &.right {
         flex-direction: column;
       }
     }
   }
 
+  // 深色模式下的 box 陰影，目的是讓卡片看起來會浮起來
   :global([data-theme='dark'])  {
     .post-wrap.left, .post-wrap.right {
       box-shadow: var(--shadow-card);
     }
   }
 
+  // 管理所有卡片(post-wrap)的區塊
   .post-wrapper {
     border-radius: 12px;
     transition: 0.3s;
 
     .aos-animate {
-      transition-property: initial !important;
+      transition-property: initial !important; // 防止與 hover 衝突
 
+      // 電腦版才有滑鼠懸停， hover 後陰影變深
       @media screen and (min-width: 768px) {
         &:hover {
           box-shadow: var(--shadow-card-hover);
@@ -222,10 +249,12 @@ const { page } = Astro.props;
       }
     }
 
+    // 為了效能提早告訴 browser 圖片要變形
     img {
       will-change: transform;
     }
 
+    // 電腦版才有滑鼠懸停，圖片放大效果
     @media screen and (min-width: 768px) {
       &:hover {
         transform: scale(1.01);
@@ -237,25 +266,29 @@ const { page } = Astro.props;
     }
   }
 
+  // 包含 meta(文章的日期、字數、閱讀時長), title, article
   .post-info {
     height: 100%;
     width: 100%;
-    padding: 20px;
+
+    padding: 20px; // 內距，文字不貼邊
     overflow: hidden;
-    box-sizing: border-box;
+    box-sizing: border-box; // padding 不會撐大框框
   }
 
   .post-meta {
     display: flex;
     justify-content: flex-end;
-    margin: 4px 0;
+    margin: 4px 0; // 距離 title 空一點點距離
 
     span {
+      margin: 0 12px; // 數據間的距離
+
       font-size: 14px;
       color: var(--grey-7);
-      margin: 0 12px;
-      white-space: nowrap;
-      text-overflow: ellipsis;
+      white-space: nowrap; // 強制不換行
+      text-overflow: ellipsis; // 太長就顯示 ...
+
       overflow: hidden;
       display: flex;
       align-items: center;
@@ -270,7 +303,7 @@ const { page } = Astro.props;
   .post-article {
     display: -webkit-box;
     -webkit-box-orient: vertical;
-    -webkit-line-clamp: 3;
+    -webkit-line-clamp: 3; // 只顯示 3 行，超過就變 ...
 
     overflow: hidden;
     line-height: 32px;
@@ -278,6 +311,7 @@ const { page } = Astro.props;
     color: var(--grey-7);
 
     a {
+      // global.css 裡目前 --color-link: var(--red-1);
       color: var(--color-link);
     }
 
@@ -287,12 +321,15 @@ const { page } = Astro.props;
   // 文章預覽封面
   .post-cover {
     width: 40%;
+    min-height: 95px;
+
+    background-color: var(--color-wrap);
+
     position: relative;
     overflow: hidden;
-    min-height: 95px;
-    background-color: var(--color-wrap);
-    flex-shrink: 0;
-    pointer-events: none;
+    
+    flex-shrink: 0; // 防止擠壓變形
+    pointer-events: none; // 滑鼠能穿透，點擊到下面的 post-link
 
     @media screen and (max-width: 767px) {
       width: 100%;
@@ -301,6 +338,8 @@ const { page } = Astro.props;
 
     @media screen and (min-width: 768px) {
       border-radius: 12px 0 0 12px;
+
+      // 讓卡片中的圖片和預覽文字中間的分隔線是斜線
       -webkit-clip-path: polygon(0 0, 92% 0%, 100% 100%, 0% 100%);
       clip-path: polygon(0 0, 92% 0%, 100% 100%, 0% 100%);
 
@@ -320,25 +359,41 @@ const { page } = Astro.props;
     }
 
     img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover; // 關鍵，圖片填滿而不變形
+      
+      left: 0;
+      top: 0;
+
       display: block;
       transition: 0.2s;
       position: absolute;
-      left: 0;
-      top: 0;
-      object-fit: cover;
-      width: 100%;
-      height: 100%;
     }
   }
 
+  // 文章預覽標題
   .post-title {
     padding: 20px 0;
     color: var(--color-link);
     font-size: 25px;
     letter-spacing: 1px;
-    white-space: nowrap;
+
+    white-space: nowrap; // 強制不換行
     overflow: hidden;
-    text-overflow: ellipsis;
+    text-overflow: ellipsis; // 太長就顯示 ...
     transition: color 0.3s;
   }
+
+  // 新增的底部背景大圖
+  .footer-bg-wrapper {
+    width: 100%;
+
+    position: relative;
+    
+    // 建立一個新的堆疊上下文，確保背景圖不會跑到 Wrapper 外面
+    // 這個堆疊是不可被插入的 (不受外界 index 影響)
+    isolation: isolate; 
+  }
+
 </style>

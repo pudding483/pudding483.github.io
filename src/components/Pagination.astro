@@ -1,6 +1,6 @@
 ---
 import { __ } from "../utils/i18n";
-import { BASE_URL } from "../utils/config";
+import { BOTTOM_BANNER, BASE_URL } from "../utils/config";
 
 type Props = {
   prevUrl: string | null;
@@ -11,11 +11,19 @@ type Props = {
 };
 
 const { prevUrl, nextUrl, currentPage, lastPage, url = "" } = Astro.props;
+
+// 確認前後兩頁是否存在，用於顯示在底部頁碼導航
 const lowerBound = currentPage - 2 > 0 ? currentPage - 2 : 1;
 const upperBound = currentPage + 2 < lastPage ? currentPage + 2 : lastPage;
 ---
 
-<nav id="page-nav" data-aos="fade-up">
+{/* AOS 實作於 AfterFooter ， fade-up 為捲動的動畫效果 */}
+<nav
+  id="page-nav"
+  data-aos="fade-up"
+  class:list={[{ "has-banner": BOTTOM_BANNER }]}
+>
+  {/* 新增一個 class ，用來控制當 BOTTOM_BANNER 存在時，底部頁碼欄位會變淡 */}
   {
     prevUrl && (
       <a href={`${BASE_URL}${prevUrl}`} class="extend prev" rel="prev">
@@ -24,18 +32,23 @@ const upperBound = currentPage + 2 < lastPage ? currentPage + 2 : lastPage;
     )
   }
   {
+    // 讓使用者可以直接回到第一頁
     lowerBound > 1 && (
       <a href={`${BASE_URL}${url}/`} class="page-number">
         1
       </a>
     )
   }
-  {lowerBound > 2 && <span class="space">…</span>}
+  {
+    // 如果往前超過兩頁，顯示省略符號
+    lowerBound > 2 && <span class="space">…</span>
+  }
   {
     Array.from(
-      { length: upperBound - lowerBound + 1 },
-      (_, index) => index + lowerBound
+      { length: upperBound - lowerBound + 1 }, // 總共需要多少按鈕
+      (_, index) => index + lowerBound, // 計算每個按鈕的頁碼數字
     ).map((page) => (
+      // 不是第一頁就會在 url 顯示頁碼，同時把當前 page 加上 current 這個 class
       <a
         href={page > 1 ? `${BASE_URL}${url}/${page}` : `${BASE_URL}${url}/`}
         class={`page-number ${page === currentPage ? "current" : ""}`}
@@ -44,8 +57,12 @@ const upperBound = currentPage + 2 < lastPage ? currentPage + 2 : lastPage;
       </a>
     ))
   }
-  {upperBound < lastPage - 1 && <span class="space">…</span>}
   {
+    // 如果往後還有超過兩頁，也顯示 ...
+    upperBound < lastPage - 1 && <span class="space">…</span>
+  }
+  {
+    // 讓讀者直接到最後一頁
     upperBound < lastPage && (
       <a href={`${BASE_URL}${url}/${lastPage}`} class="page-number">
         {lastPage}
@@ -64,13 +81,35 @@ const upperBound = currentPage + 2 < lastPage ? currentPage + 2 : lastPage;
 <style lang="stylus">
   #page-nav {
     margin: 36px auto;
-    background: var(--color-wrap);
+
     border-radius: 12px;
+    background: var(--color-wrap);
+
+    &.has-banner {
+      // 毛玻璃效果
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+
+      .current {
+        // 使用 unquote 避免 Stylus 報錯
+        background: unquote("color-mix(in srgb, var(--red-2), transparent 40%)");
+        box-shadow: 0 0 8px var(--color-red-3-shadow);
+
+        // 這個是當有 BOTTOM_BANNER 的情況下，滑鼠 hover 的效果
+        // 重點：如果不在這裡寫 &:hover => ID(100) + Class(10)*2 = 120 分 > 111 分
+        // 因為比 a &:hover 分數還要高，只能在裡面宣告行為
+        &:hover {
+          background: var(--red-1);
+        }
+      }
+    }
+    
     text-align: center;
     color: var(--grey-9);
     overflow: hidden;
-    transition: 1s;
+    transition: 0.8s;
 
+    // 整條分頁導航欄當滑鼠放上去的效果
     &:hover {
       box-shadow: var(--shadow-card);
     }
@@ -85,6 +124,7 @@ const upperBound = currentPage + 2 < lastPage ? currentPage + 2 : lastPage;
       text-decoration: none;
       transition: 0.2s;
 
+      // #page-nav a:hover 總共 ID(100) + Pseudo(10) + Tag a(1) = 111 分
       &:hover {
         background: var(--red-2);
         box-shadow: var(--shadow-red-6-shadow);

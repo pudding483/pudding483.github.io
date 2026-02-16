@@ -6,7 +6,7 @@ export default {
     keywords: "483, blog, astro, theme",
     author: "483", // 影響 Sidebar 中的名稱(有大頭貼的)， Footer 中的版權聲明
     language: "zh-TW",
-    icon: "/images/favicon.ico",
+    icon: "/images/favicon.ico", // 頁籤中的 favicon
   },
 
   sidebar: {
@@ -41,6 +41,11 @@ export default {
   // 新增這個區塊，專門控制翻譯功能
   translation: {
     enable: false,
+  },
+
+  bottom_banner: {
+    enable: true,
+    src: "/images/Quintuplets-2048x865.webp",
   },
 
   footer: {

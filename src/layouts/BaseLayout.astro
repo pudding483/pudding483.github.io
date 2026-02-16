@@ -63,8 +63,11 @@ const {
     <VendorScript />
     <ClientRouter />
   </head>
+
   <body>
     <Loader />
+
+    {/* 這裡把 cover 丟給 Header 組件， Header 用 astro.props 去接 */}
     <Header title={title} cover={cover}>
       <slot name="header" />
     </Header>
@@ -88,8 +91,10 @@ const {
         )
       }
     </main>
+
     <slot name="footer" />
     <AfterFooter />
+
     <ToTop client:load url={BASE_URL} />
     <MobileNav isPost={isPost} headings={headings} toc={toc} />
     <div id="mask" class="hide"></div>

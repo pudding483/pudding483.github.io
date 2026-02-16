@@ -1,7 +1,7 @@
 export default {
   categories: "分類",
   search: "搜尋",
-  tags: "標簽",
+  tags: "標籤",
   tagcloud: "標籤雲",
   tweets: "推文",
   prev: "上一頁",
@@ -30,7 +30,7 @@ export default {
   sidebar: {
     post: "文章",
     category: "分類",
-    tag: "標簽",
+    tag: "標籤",
   },
 
   not_found: {

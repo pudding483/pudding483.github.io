@@ -1,0 +1,100 @@
+---
+// src/components/BottomBackground.astro
+
+import { BOTTOM_BANNER } from "../utils/config";
+import { urlFor } from "../utils/urlFor";
+---
+
+<div class="bottom-bg-container">
+  <img
+    class="bottom-bg-img"
+    src={urlFor(BOTTOM_BANNER.src)}
+    alt="Footer Background"
+    loading="lazy"
+  />
+</div>
+
+<script>
+  // 這裡放入原本的檢查邏輯，保持 index.astro 乾淨
+  function checkBackgroundCollision() {
+    const bottomImg = document.querySelector(".bottom-bg-img");
+    const footer = document.getElementById("footer");
+
+    if (!bottomImg) return; // 如果沒有圖片就跳出
+
+    const bodyHeight = document.body.scrollHeight;
+    const windowHeight = window.innerHeight;
+
+    // 如果內容太少（比視窗高度還小），隱藏底部圖，避免跟 banner 打架
+    if (bodyHeight < windowHeight * 1.5) {
+      bottomImg.classList.add("hide-bottom-bg");
+      // 如果沒有底部圖 footer 就維持原本的大小
+      if (footer) {
+        footer.classList.remove("has-bottom-banner");
+      }
+    } else {
+      bottomImg.classList.remove("hide-bottom-bg");
+      // footer 加上 bottom-banner 這個 class 讓底部空間變大
+      if (footer) {
+        footer.classList.add("has-bottom-banner");
+      }
+    }
+  }
+
+  window.addEventListener("load", checkBackgroundCollision);
+  window.addEventListener("resize", checkBackgroundCollision);
+  document.addEventListener("astro:page-load", checkBackgroundCollision);
+</script>
+
+<style>
+  .bottom-bg-container {
+    width: 100%;
+    height: 600px;
+
+    position: absolute;
+    bottom: 0;
+    left: 0;
+
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none; /* 讓滑鼠可以點擊穿透到上層的 Footer 連結 */
+  }
+
+  .bottom-bg-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: bottom center;
+    opacity: 0.4;
+    transition: opacity 0.5s ease;
+
+    /* 遮罩效果：由下(不透明)往上(透明)漸層 */
+    /* 這樣圖片就會「融入」背景色，不會有一條明顯的切線 */
+    mask-image: linear-gradient(
+      to top,
+      // 由下往上
+      rgba(0, 0, 0, 1) 0%,
+      rgba(0, 0, 0, 0.8) 40%,
+      rgba(0, 0, 0, 0.6) 70%,
+      transparent 100%
+    );
+    /* liner-gradient( 方向，預設由上往下, <顏色-1, 位置-1, 顏色-2, 位置-2, ...> ) */
+    /* rgba(0,0,0,<透明度>)， rgba(0,0,0,0.6) 40% 代表到了高度 40% 的位置透明度變成了 0.6 */
+    -webkit-mask-image: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 1) 0%,
+      rgba(0, 0, 0, 0.8) 40%,
+      rgba(0, 0, 0, 0.6) 70%,
+      transparent 100%
+    );
+
+    @media screen and (max-width: 767px) {
+      display: none;
+    }
+  }
+
+  /* 使用 & 做父層引用 */
+  &.hide-bottom-bg {
+    opacity: 0;
+  }
+</style>

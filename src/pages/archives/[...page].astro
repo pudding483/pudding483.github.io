@@ -1,15 +1,17 @@
 ---
 import { getCollection, type CollectionEntry } from "astro:content";
 
-import BaseLayout from "../../layouts/BaseLayout.astro";
-import { __ } from "../../utils/i18n";
-import Footer from "../../components/Footer.astro";
-import TagList from "../../components/partial/TagList.astro";
-import ArchiveList from "../../components/ArchiveList.astro";
-import Pagination from "../../components/Pagination.astro";
-import HeaderTitle from "../../components/partial/header/HeaderTitle.astro";
 import { BASE_URL } from "../../utils/config";
+import { __ } from "../../utils/i18n";
+
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import HeaderTitle from "../../components/partial/header/HeaderTitle.astro";
 import CategoryList from "../../components/partial/CategoryList.astro";
+import ArchiveList from "../../components/ArchiveList.astro";
+import TagList from "../../components/partial/TagList.astro";
+import Pagination from "../../components/Pagination.astro";
+import BottomBackground from "../../components/BottomBackground.astro";
+import Footer from "../../components/Footer.astro";
 
 // 首頁使用 paginate 來產生分頁路由 (Astro 原生的魔法函式)
 export async function getStaticPaths({ paginate }: { paginate: Function }) {
@@ -74,6 +76,7 @@ posts.forEach((post) => {
     url=`${BASE_URL}/archives`
     slot="header"
   />
+
   <!-- Content -->
   <section id="main" aria-label="Main content">
     <div class="archives-outer-wrap" data-aos="fade-up">
@@ -81,6 +84,7 @@ posts.forEach((post) => {
       <CategoryList categories={[...categories]} />
       <ArchiveList page={page} type="archives" />
     </div>
+
     <Pagination
       prevUrl={page.url.prev}
       nextUrl={page.url.next}
@@ -89,14 +93,27 @@ posts.forEach((post) => {
       url="/archives"
     />
   </section>
+
   <!-- Footer -->
-  <Footer slot="footer" />
+  <div slot="footer" class="footer-bg-wrapper">
+    <BottomBackground />
+    <Footer />
+  </div>
 </BaseLayout>
 
 <style>
+  /* archive 文章區塊的背景 */
   .archives-outer-wrap {
+    /* 明亮模式下 --color-wrap: #fff 白色 */
+    /* 深色模式下 --color-wrap: #272b30 灰黑色 */
     background: var(--color-wrap);
     border-radius: 12px;
     padding: 16px 0;
+  }
+
+  .footer-bg-wrapper {
+    width: 100%;
+    position: relative;
+    isolation: isolate; /* 建立堆疊上下文，保護背景圖不外洩 */
   }
 </style>

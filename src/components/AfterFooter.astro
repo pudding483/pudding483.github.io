@@ -99,7 +99,10 @@ const copyright = String.raw`
   document.addEventListener("astro:after-swap", initColorMode);
 </script>
 
-<!-- Firework --><!-- {firework && firework.enable && (
+<!-- Firework -->
+{
+  /*
+{firework && firework.enable && (
   <>
     <script>
       function initFirework() {
@@ -129,7 +132,11 @@ const copyright = String.raw`
       window.__FIREWORK_CONFIG__ = firework;
     </script>
   </>
-)} -->
+)}
+
+*/
+}
+
 <script is:inline define:vars={{ firework }}>
   window.__FIREWORK_CONFIG__ = firework || null;
 </script>

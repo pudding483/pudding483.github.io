@@ -9,7 +9,7 @@ import {
   MENU,
   BANNER,
   BANNER_SRCSET,
-  Translation, // 新增這個區塊，專門控制翻譯功能
+  TRANSLATION, // 新增這個區塊，專門控制翻譯功能
   TRIANGLE_BADGE,
 } from "../utils/config";
 import { urlFor } from "../utils/urlFor";
@@ -26,6 +26,7 @@ type Props = {
   cover?: string;
 };
 
+// 從 Astro.props 拿出父組件傳過來的東西
 const { title = SITE.title, cover } = Astro.props;
 const posts = await getCollection("blog");
 const sortedPosts = posts.sort(
@@ -59,10 +60,11 @@ const sortedPosts = posts.sort(
     <SearchBtn client:load className="nav-icon" />
 
     {/* 新增語言轉換按鈕，同時在 config.ts 設定可自由開關顯示 */}
-    {Translation.enable && <TranslateBtn client:load className="nav-icon" />}
+    {TRANSLATION.enable && <TranslateBtn client:load className="nav-icon" />}
 
     <ThemeBtn client:load className="nav-icon" />
   </nav>
+
   {
     TRIANGLE_BADGE.enable && (
       <a
@@ -80,6 +82,7 @@ const sortedPosts = posts.sort(
     )
   }
 </div>
+
 <header id="header">
   {
     cover ? (
@@ -249,6 +252,7 @@ const sortedPosts = posts.sort(
     }
   }
 
+  // 右上角的三角徽章
   .triangle-badge {
     position: absolute;
     top: -6px;
@@ -267,6 +271,7 @@ const sortedPosts = posts.sort(
     }
   }
 
+  // 三角徽章裡的圖標
   .triangle-badge-icon {
     position: absolute;
     top: 12px;
