@@ -78,7 +78,7 @@ const upperBound = currentPage + 2 < lastPage ? currentPage + 2 : lastPage;
   }
 </nav>
 
-<style lang="stylus">
+<style lang="scss">
   #page-nav {
     margin: 36px auto;
 
@@ -86,18 +86,21 @@ const upperBound = currentPage + 2 < lastPage ? currentPage + 2 : lastPage;
     background: var(--color-wrap);
 
     &.has-banner {
-      // 毛玻璃效果
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+      /* 毛玻璃效果 */
+      // backdrop-filter: blur(8px);
+      // -webkit-backdrop-filter: blur(8px);
+
+      /* 有 banner 就透明 nav bar ，只顯示外框*/
+      border: 1px solid color-mix(in srgb, var(--color-wrap), transparent 70%);
+      background: color-mix(in srgb, var(--color-wrap), transparent 95%);
 
       .current {
-        // 使用 unquote 避免 Stylus 報錯
-        background: unquote("color-mix(in srgb, var(--red-2), transparent 40%)");
+        background: color-mix(in srgb, var(--red-2), transparent 60%);
         box-shadow: 0 0 8px var(--color-red-3-shadow);
 
-        // 這個是當有 BOTTOM_BANNER 的情況下，滑鼠 hover 的效果
-        // 重點：如果不在這裡寫 &:hover => ID(100) + Class(10)*2 = 120 分 > 111 分
-        // 因為比 a &:hover 分數還要高，只能在裡面宣告行為
+        /* 這個是當有 BOTTOM_BANNER 的情況下，滑鼠 hover 的效果 */
+        /* 重點：如果不在這裡寫 &:hover => ID(100) + Class(10)*2 = 120 分 > 111 分 */
+        /* 因為比 a &:hover 分數還要高，只能在裡面宣告行為 */
         &:hover {
           background: var(--red-1);
         }
@@ -109,7 +112,7 @@ const upperBound = currentPage + 2 < lastPage ? currentPage + 2 : lastPage;
     overflow: hidden;
     transition: 0.8s;
 
-    // 整條分頁導航欄當滑鼠放上去的效果
+    /* 整條分頁導航欄當滑鼠放上去的效果 */
     &:hover {
       box-shadow: var(--shadow-card);
     }
@@ -124,7 +127,7 @@ const upperBound = currentPage + 2 < lastPage ? currentPage + 2 : lastPage;
       text-decoration: none;
       transition: 0.2s;
 
-      // #page-nav a:hover 總共 ID(100) + Pseudo(10) + Tag a(1) = 111 分
+      /* #page-nav a:hover 總共 ID(100) + Pseudo(10) + Tag a(1) = 111 分 */
       &:hover {
         background: var(--red-2);
         box-shadow: var(--shadow-red-6-shadow);

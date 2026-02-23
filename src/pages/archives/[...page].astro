@@ -102,6 +102,12 @@ posts.forEach((post) => {
 </BaseLayout>
 
 <style>
+  /* 用來控制避免 Bottom Banner 因為渲染順序，直接覆蓋了 main section 的所有內容 */
+  #main {
+    position: relative;
+    z-index: 1;
+  }
+
   /* archive 文章區塊的背景 */
   .archives-outer-wrap {
     /* 明亮模式下 --color-wrap: #fff 白色 */
