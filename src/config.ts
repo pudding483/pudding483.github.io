@@ -186,6 +186,18 @@ export default {
       desc: "Main Site with hexo-theme-reimu",
       avatar: "https://d-sketon.github.io/avatar/avatar.webp",
     },
+    {
+      name: "CHW",
+      url: "https://chw41.github.io/",
+      desc: "Red Team | Party Engineer",
+      avatar: "/images/friend-avatars/CHW.webp",
+    },
+    {
+      name: "Adb2",
+      url: "https://adb2.pages.dev/",
+      desc: "CTF player | Reverser",
+      avatar: "/images/friend-avatars/Adb2.webp",
+    },
   ],
 
   copyright: {

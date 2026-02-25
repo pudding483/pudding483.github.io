@@ -46,7 +46,7 @@ import { urlFor } from "../utils/urlFor";
   document.addEventListener("astro:page-load", checkBackgroundCollision);
 </script>
 
-<style>
+<style lang="scss">
   .bottom-bg-container {
     width: 100%;
     height: 600px;
@@ -91,10 +91,10 @@ import { urlFor } from "../utils/urlFor";
     @media screen and (max-width: 767px) {
       display: none;
     }
-  }
 
-  /* 使用 & 做父層引用 */
-  &.hide-bottom-bg {
-    opacity: 0;
+    /* 使用 & 做父層引用 */
+    &.hide-bottom-bg {
+      opacity: 0;
+    }
   }
 </style>

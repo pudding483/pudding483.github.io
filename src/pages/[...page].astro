@@ -1,4 +1,4 @@
----
+﻿---
 import { getCollection } from "astro:content";
 import type { CollectionEntry } from "astro:content";
 import { Icon } from "astro-icon/components";
@@ -17,6 +17,8 @@ import HomeCategories from "../components/HomeCategories.astro";
 import Pagination from "../components/Pagination.astro";
 import BottomBackground from "../components/BottomBackground.astro"; // 用來實作底部大圖
 import Footer from "../components/Footer.astro";
+// 動態計算有哪些 PostWrap 需要透明，BottomBanner 才不會被遮擋
+import PostWrapTransparencyScript from "../components/partial/PostWrapTransparencyScript.astro";
 
 type Props = {
   page: {
@@ -167,6 +169,7 @@ const { page } = Astro.props;
       nextUrl={page.url.next}
       currentPage={page.currentPage}
       lastPage={page.lastPage}
+      variant="glass"
     />
   </section>
 
@@ -179,6 +182,8 @@ const { page } = Astro.props;
     <Footer />
   </div>
 </BaseLayout>
+
+<PostWrapTransparencyScript />
 
 {/* scss 用來寫巢狀 css */}
 <style lang="scss">

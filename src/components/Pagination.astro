@@ -1,6 +1,6 @@
----
+﻿---
 import { __ } from "../utils/i18n";
-import { BOTTOM_BANNER, BASE_URL } from "../utils/config";
+import { BASE_URL } from "../utils/config";
 
 type Props = {
   prevUrl: string | null;
@@ -8,9 +8,17 @@ type Props = {
   currentPage: number;
   lastPage: number;
   url?: string;
+  variant?: "solid" | "glass";
 };
 
-const { prevUrl, nextUrl, currentPage, lastPage, url = "" } = Astro.props;
+const {
+  prevUrl,
+  nextUrl,
+  currentPage,
+  lastPage,
+  url = "",
+  variant = "solid",
+} = Astro.props;
 
 // 確認前後兩頁是否存在，用於顯示在底部頁碼導航
 const lowerBound = currentPage - 2 > 0 ? currentPage - 2 : 1;
@@ -21,7 +29,7 @@ const upperBound = currentPage + 2 < lastPage ? currentPage + 2 : lastPage;
 <nav
   id="page-nav"
   data-aos="fade-up"
-  class:list={[{ "has-banner": BOTTOM_BANNER }]}
+  class:list={[{ "is-glass": variant === "glass" }]}
 >
   {/* 新增一個 class ，用來控制當 BOTTOM_BANNER 存在時，底部頁碼欄位會變淡 */}
   {
@@ -39,14 +47,11 @@ const upperBound = currentPage + 2 < lastPage ? currentPage + 2 : lastPage;
       </a>
     )
   }
-  {
-    // 如果往前超過兩頁，顯示省略符號
-    lowerBound > 2 && <span class="space">…</span>
-  }
+  {lowerBound > 2 && <span class="space">…</span>}
   {
     Array.from(
-      { length: upperBound - lowerBound + 1 }, // 總共需要多少按鈕
-      (_, index) => index + lowerBound, // 計算每個按鈕的頁碼數字
+      { length: upperBound - lowerBound + 1 },
+      (_, index) => index + lowerBound,
     ).map((page) => (
       // 不是第一頁就會在 url 顯示頁碼，同時把當前 page 加上 current 這個 class
       <a
@@ -57,10 +62,7 @@ const upperBound = currentPage + 2 < lastPage ? currentPage + 2 : lastPage;
       </a>
     ))
   }
-  {
-    // 如果往後還有超過兩頁，也顯示 ...
-    upperBound < lastPage - 1 && <span class="space">…</span>
-  }
+  {upperBound < lastPage - 1 && <span class="space">…</span>}
   {
     // 讓讀者直接到最後一頁
     upperBound < lastPage && (
@@ -85,14 +87,19 @@ const upperBound = currentPage + 2 < lastPage ? currentPage + 2 : lastPage;
     border-radius: 12px;
     background: var(--color-wrap);
 
-    &.has-banner {
-      /* 毛玻璃效果 */
+    // 如果 bottom banner 會被蓋到，就會攜帶這個 class ，讓 page nav bar 變成透明
+    &.is-glass {
+      // 毛玻璃效果並不好，取消使用
       // backdrop-filter: blur(8px);
       // -webkit-backdrop-filter: blur(8px);
-
-      /* 有 banner 就透明 nav bar ，只顯示外框*/
+      
       border: 1px solid color-mix(in srgb, var(--color-wrap), transparent 70%);
-      background: color-mix(in srgb, var(--color-wrap), transparent 95%);
+      background: color-mix(in srgb, var(--color-wrap), transparent 100%);
+
+      // 控制當有 bottom banner 的情況，被 hover 時為了讓使用者更清楚有選到，改變背景顏色
+      &:hover {
+        background: color-mix(in srgb, var(--color-wrap), transparent 40%);
+      }
 
       .current {
         background: color-mix(in srgb, var(--red-2), transparent 60%);
@@ -106,13 +113,13 @@ const upperBound = currentPage + 2 < lastPage ? currentPage + 2 : lastPage;
         }
       }
     }
-    
+
     text-align: center;
     color: var(--grey-9);
     overflow: hidden;
     transition: 0.8s;
 
-    /* 整條分頁導航欄當滑鼠放上去的效果 */
+    // 任何狀態下被 hover
     &:hover {
       box-shadow: var(--shadow-card);
     }

@@ -1,0 +1,67 @@
+<script>
+  // 用來計算 BottomBanner 會超出幾個 PostWrap
+  let rafId = 0;
+  let bgResizeObserver: ResizeObserver | null = null;
+
+  const clamp = (v: number, min = 0, max = 1) =>
+    Math.min(max, Math.max(min, v));
+
+  const updatePostWrapTransparency = () => {
+    const bottomBg =
+      document.querySelector<HTMLElement>(".bottom-bg-container");
+    const wraps = Array.from(document.querySelectorAll<HTMLElement>(".post-wrap"));
+
+    if (!wraps.length) return;
+
+    if (!bottomBg) {
+      wraps.forEach((wrap) => {
+        wrap.style.removeProperty("--post-wrap-bottom-transparency");
+      });
+      return;
+    }
+
+    // 計算 bottom-bg-container 
+    const bgTop = bottomBg.getBoundingClientRect().top;
+
+    // 計算每個 post-wrap 和 bottom-bg-container 的重和度
+    wraps.forEach((wrap) => {
+      const rect = wrap.getBoundingClientRect();
+      const overlap = clamp((rect.bottom - bgTop) / rect.height, 0, 1);
+      const bottomTransparency = 60 + Math.round(overlap * 30);
+
+      wrap.style.setProperty(
+        "--post-wrap-bottom-transparency",
+        `${bottomTransparency}%`,
+      );
+    });
+  };
+
+  const scheduleUpdate = () => {
+    if (rafId) cancelAnimationFrame(rafId);
+    rafId = requestAnimationFrame(updatePostWrapTransparency);
+  };
+
+  const bindBottomBgObserver = () => {
+    if (bgResizeObserver) {
+      bgResizeObserver.disconnect();
+      bgResizeObserver = null;
+    }
+
+    const bottomBg =
+      document.querySelector<HTMLElement>(".bottom-bg-container");
+    if (!bottomBg || !("ResizeObserver" in window)) return;
+
+    bgResizeObserver = new ResizeObserver(() => scheduleUpdate());
+    bgResizeObserver.observe(bottomBg);
+  };
+
+  const initPostWrapTransparency = () => {
+    bindBottomBgObserver();
+    scheduleUpdate();
+  };
+
+  window.addEventListener("load", initPostWrapTransparency);
+  window.addEventListener("resize", scheduleUpdate, { passive: true });
+  document.addEventListener("astro:page-load", initPostWrapTransparency);
+  document.addEventListener("astro:after-swap", initPostWrapTransparency);
+</script>
