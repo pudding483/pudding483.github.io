@@ -30,9 +30,13 @@ const { isPost = false, headings = [], toc = true } = Astro.props;
   </div>
 </aside>
 
-<style>
+<style lang="scss">
   #sidebar {
     display: none;
+
+    // 用來保護不被 bottom banner 蓋住
+    position: relative;
+    z-index: 1;
   }
 
   :global(.sidebar-left),

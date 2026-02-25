@@ -13,15 +13,15 @@ import Pagination from "../../components/Pagination.astro";
 import BottomBackground from "../../components/BottomBackground.astro";
 import Footer from "../../components/Footer.astro";
 
-// 首頁使用 paginate 來產生分頁路由 (Astro 原生的魔法函式)
+// Homepage uses paginate to generate route pages (Astro built-in helper)
 export async function getStaticPaths({ paginate }: { paginate: Function }) {
   const posts = await getCollection("blog");
   posts.sort((a, b) => {
-    // 以發佈日期排序，最新的在前面
+    // Sort by publish date, newest first
     return b.data.pubDate.getTime() - a.data.pubDate.getTime();
   });
   return paginate(posts, {
-    // 每頁顯示 10 篇文章
+    // 10 posts per page
     pageSize: 10,
   });
 }
@@ -54,7 +54,7 @@ const posts = await getCollection("blog");
 const tags = new Set<string>();
 const categories = new Set<string>();
 
-// 收集所有文章的 tags 和 categories
+// Collect tags and categories from all posts
 posts.forEach((post) => {
   if (Array.isArray(post.data.tags)) {
     post.data.tags.forEach((tag) => {
@@ -103,16 +103,15 @@ posts.forEach((post) => {
 </BaseLayout>
 
 <style>
-  /* 用來控制避免 Bottom Banner 因為渲染順序，直接覆蓋了 main section 的所有內容 */
+  /* Keep main content above Bottom Banner layer */
   #main {
     position: relative;
     z-index: 1;
   }
-
-  /* archive 文章區塊的背景 */
+  /* Archive content container background */
   .archives-outer-wrap {
-    /* 明亮模式下 --color-wrap: #fff 白色 */
-    /* 深色模式下 --color-wrap: #272b30 灰黑色 */
+    /* light theme --color-wrap: #fff */
+    /* dark theme --color-wrap: #272b30 */
     background: var(--color-wrap);
     border-radius: 12px;
     padding: 16px 0;
@@ -121,6 +120,6 @@ posts.forEach((post) => {
   .footer-bg-wrapper {
     width: 100%;
     position: relative;
-    isolation: isolate; /* 建立堆疊上下文，保護背景圖不外洩 */
+    isolation: isolate; /* keep bottom background stacking context isolated */
   }
 </style>
