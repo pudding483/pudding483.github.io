@@ -15,7 +15,10 @@
 
     if (!bottomBg) {
       wraps.forEach((wrap) => {
-        wrap.style.removeProperty("--post-wrap-bottom-transparency");
+        wrap.classList.remove("has-bottom-overlap");
+        wrap.classList.remove("is-full-bottom-overlap");
+        wrap.style.removeProperty("--post-wrap-overlap-px");
+        wrap.style.removeProperty("--post-wrap-overlap-fade-start-px");
       });
       return;
     }
@@ -26,12 +29,35 @@
     // 計算每個 post-wrap 和 bottom-bg-container 的重和度
     wraps.forEach((wrap) => {
       const rect = wrap.getBoundingClientRect();
-      const overlap = clamp((rect.bottom - bgTop) / rect.height, 0, 1);
-      const bottomTransparency = 60 + Math.round(overlap * 30);
+      const overlapPx = clamp(rect.bottom - bgTop, 0, rect.height);
 
+      // 如果沒有蓋到 bottom banner ，背景顏色就正常
+      if (overlapPx <= 0) {
+        wrap.classList.remove("has-bottom-overlap");
+        wrap.classList.remove("is-full-bottom-overlap");
+        wrap.style.removeProperty("--post-wrap-overlap-px");
+        wrap.style.removeProperty("--post-wrap-overlap-fade-start-px");
+        return;
+      }
+
+      // 如果超過了整張 post-wrap ，就整張透明
+      if (overlapPx >= rect.height) {
+        wrap.classList.add("has-bottom-overlap");
+        wrap.classList.add("is-full-bottom-overlap");
+        wrap.style.setProperty("--post-wrap-overlap-px", `${rect.height}px`);
+        wrap.style.setProperty("--post-wrap-overlap-fade-start-px", "0px");
+        return;
+      }
+
+      // 重疊部分到實心部分做 fade ，長度目前是 36px
+      const overlapFadeStartPx = Math.max(0, overlapPx - 36);
+
+      wrap.classList.add("has-bottom-overlap");
+      wrap.classList.remove("is-full-bottom-overlap");
+      wrap.style.setProperty("--post-wrap-overlap-px", `${overlapPx}px`);
       wrap.style.setProperty(
-        "--post-wrap-bottom-transparency",
-        `${bottomTransparency}%`,
+        "--post-wrap-overlap-fade-start-px",
+        `${overlapFadeStartPx}px`,
       );
     });
   };

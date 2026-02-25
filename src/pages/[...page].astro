@@ -213,12 +213,43 @@ const { page } = Astro.props;
     margin-bottom: 32px;
 
     border-radius: 12px;
-    /* background: var(--color-wrap); */
+    /* 所有 post-wrap 都有透明度 */
+    /* background: color-mix(in srgb, var(--color-wrap), transparent 60%); */
+    background: var(--color-wrap);
+    // backdrop-filter: blur(8px);
+    // -webkit-backdrop-filter: blur(8px);
 
-    /* 在有 bottom banner 的情況下，需要透明度 */
-    background: color-mix(in srgb, var(--color-wrap), transparent 60%);
-    backdrop-filter: blur(8px);           /* 毛玻璃效果 */
-    -webkit-backdrop-filter: blur(8px);   /* 支援 Safari */
+    // 根據 PostWrapTransparencyScript 的重和值，決定透明範圍
+    // var(--post-wrap-overlap-px, 0px) 的 0px 是預設值，避免出錯
+    &.has-bottom-overlap {
+      background: linear-gradient(
+        to top,
+        color-mix(in srgb, var(--color-wrap), transparent 90%) 0,
+        color-mix(in srgb, var(--color-wrap), transparent 90%)
+          var(--post-wrap-overlap-fade-start-px, 0px),
+        color-mix(in srgb, var(--color-wrap), transparent 75%)
+          var(--post-wrap-overlap-px, 0px),
+        var(--color-wrap) var(--post-wrap-overlap-px, 0px),
+        var(--color-wrap) 100%
+      );
+
+      // 被 hover 就變成幾乎實心
+      &:hover {
+        background: color-mix(in srgb, var(--color-wrap), transparent 20%);
+      }
+    }
+
+    &.is-full-bottom-overlap {
+      background: linear-gradient(
+        to top,
+        color-mix(in srgb, var(--color-wrap), transparent 90%) 0,
+        color-mix(in srgb, var(--color-wrap), transparent 75%) 100%
+      );
+
+      &:hover {
+        background: color-mix(in srgb, var(--color-wrap), transparent 20%);
+      }
+    }
 
     /* 用來實作 post-link 中的「整張卡片都可以被點擊查看」 */
     position: relative;
