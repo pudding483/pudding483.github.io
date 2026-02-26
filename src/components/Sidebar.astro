@@ -1,5 +1,6 @@
 ---
 import SidebarWrapper from "./sidebar/SidebarWrapper.astro";
+import SidebarBottomRevealScript from "./sidebar/SidebarBottomRevealScript.astro";
 import Widget from "./Widget.astro";
 
 type Props = {
@@ -29,6 +30,8 @@ const { isPost = false, headings = [], toc = true } = Astro.props;
     <Widget isPost={isPost} />
   </div>
 </aside>
+
+<SidebarBottomRevealScript />
 
 <style lang="scss">
   #sidebar {
@@ -108,6 +111,29 @@ const { isPost = false, headings = [], toc = true } = Astro.props;
         box-shadow: var(--shadow-card-hover);
       }
     }
+  }
+
+  :global(#sidebar .sidebar-wrap.has-bottom-overlap),
+  :global(#sidebar .widget-wrap.has-bottom-overlap) {
+    background: linear-gradient(
+      to top,
+      color-mix(in srgb, var(--color-wrap), transparent 90%) 0,
+      color-mix(in srgb, var(--color-wrap), transparent 90%)
+        var(--sidebar-overlap-fade-start-px, 0px),
+      color-mix(in srgb, var(--color-wrap), transparent 75%)
+        var(--sidebar-overlap-px, 0px),
+      var(--color-wrap) var(--sidebar-overlap-px, 0px),
+      var(--color-wrap) 100%
+    );
+  }
+
+  :global(#sidebar .sidebar-wrap.is-full-bottom-overlap),
+  :global(#sidebar .widget-wrap.is-full-bottom-overlap) {
+    background: linear-gradient(
+      to top,
+      color-mix(in srgb, var(--color-wrap), transparent 90%) 0,
+      color-mix(in srgb, var(--color-wrap), transparent 75%) 100%
+    );
   }
 
   /* 從 sidebar 頂部(大頭貼) 到底部(標籤區塊) */

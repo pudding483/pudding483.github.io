@@ -1,0 +1,88 @@
+<script>
+  let rafId = 0;
+  let bgResizeObserver: ResizeObserver | null = null;
+
+  const clamp = (v: number, min = 0, max = 1) =>
+    Math.min(max, Math.max(min, v));
+
+  const updateSidebarOverlap = () => {
+    const bottomBg =
+      document.querySelector<HTMLElement>(".bottom-bg-container");
+    const targets = Array.from(
+      document.querySelectorAll<HTMLElement>(
+        "#sidebar .sidebar-wrap, #sidebar .widget-wrap",
+      ),
+    );
+
+    if (!targets.length) return;
+
+    if (!bottomBg) {
+      targets.forEach((el) => {
+        el.classList.remove("has-bottom-overlap");
+        el.classList.remove("is-full-bottom-overlap");
+        el.style.removeProperty("--sidebar-overlap-px");
+        el.style.removeProperty("--sidebar-overlap-fade-start-px");
+      });
+      return;
+    }
+
+    const bgTop = bottomBg.getBoundingClientRect().top;
+
+    targets.forEach((el) => {
+      const rect = el.getBoundingClientRect();
+      const overlapPx = clamp(rect.bottom - bgTop, 0, rect.height);
+
+      if (overlapPx <= 0) {
+        el.classList.remove("has-bottom-overlap");
+        el.classList.remove("is-full-bottom-overlap");
+        el.style.removeProperty("--sidebar-overlap-px");
+        el.style.removeProperty("--sidebar-overlap-fade-start-px");
+        return;
+      }
+
+      if (overlapPx >= rect.height) {
+        el.classList.add("has-bottom-overlap");
+        el.classList.add("is-full-bottom-overlap");
+        el.style.setProperty("--sidebar-overlap-px", `${rect.height}px`);
+        el.style.setProperty("--sidebar-overlap-fade-start-px", "0px");
+        return;
+      }
+
+      const fadeStartPx = Math.max(0, overlapPx - 36);
+
+      el.classList.add("has-bottom-overlap");
+      el.classList.remove("is-full-bottom-overlap");
+      el.style.setProperty("--sidebar-overlap-px", `${overlapPx}px`);
+      el.style.setProperty("--sidebar-overlap-fade-start-px", `${fadeStartPx}px`);
+    });
+  };
+
+  const scheduleUpdate = () => {
+    if (rafId) cancelAnimationFrame(rafId);
+    rafId = requestAnimationFrame(updateSidebarOverlap);
+  };
+
+  const bindBottomBgObserver = () => {
+    if (bgResizeObserver) {
+      bgResizeObserver.disconnect();
+      bgResizeObserver = null;
+    }
+
+    const bottomBg =
+      document.querySelector<HTMLElement>(".bottom-bg-container");
+    if (!bottomBg || !("ResizeObserver" in window)) return;
+
+    bgResizeObserver = new ResizeObserver(() => scheduleUpdate());
+    bgResizeObserver.observe(bottomBg);
+  };
+
+  const initSidebarBottomReveal = () => {
+    bindBottomBgObserver();
+    scheduleUpdate();
+  };
+
+  window.addEventListener("load", initSidebarBottomReveal);
+  window.addEventListener("resize", scheduleUpdate, { passive: true });
+  document.addEventListener("astro:page-load", initSidebarBottomReveal);
+  document.addEventListener("astro:after-swap", initSidebarBottomReveal);
+</script>
