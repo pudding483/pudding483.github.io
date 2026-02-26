@@ -34,35 +34,64 @@ const { isPost = false, headings = [], toc = true } = Astro.props;
   #sidebar {
     display: none;
 
-    // 用來保護不被 bottom banner 蓋住
+    // 用來保護 Sidebar 不被 bottom banner 蓋住
     position: relative;
     z-index: 1;
   }
 
-  :global(.sidebar-left),
-  :global(.sidebar-right) {
-    #sidebar {
+  // :global(.sidebar-left),
+  // :global(.sidebar-right) {
+  //   #sidebar {
+  //     display: block;
+
+  //     @media screen and (max-width: 959px) {
+  //       display: none;
+  //     }
+
+  //     @media screen and (min-width: 960px) {
+  //       width: 23%;
+  //       min-width: 268px;
+  //       margin: 0 16px;
+  //       height: inherit;
+  //     }
+  //   }
+
+  //   :global(#main) {
+  //     @media screen and (min-width: 960px) {
+  //       padding: 0;
+  //       width: 73%;
+  //       max-width: calc(100% - 268px - 64px);
+  //       margin: 0 16px;
+  //     }
+  //   }
+  // }
+
+  // 重構上述寫法
+  @media screen and (max-width: 959px) {
+    :global(.sidebar-left) #sidebar,
+    :global(.sidebar-right) #sidebar {
+      display: none;
+    }
+  }
+
+  @media screen and (min-width: 960px) {
+    :global(.sidebar-left) #sidebar,
+    :global(.sidebar-right) #sidebar {
       display: block;
-
-      @media screen and (max-width: 959px) {
-        display: none;
-      }
-
-      @media screen and (min-width: 960px) {
-        width: 23%;
-        min-width: 268px;
-        margin: 0 16px;
-        height: inherit;
-      }
+      width: 23%;
+      min-width: 268px;
+      margin: 0 16px;
+      height: inherit;
     }
 
-    :global(#main) {
-      @media screen and (min-width: 960px) {
-        padding: 0;
-        width: 73%;
-        max-width: calc(100% - 268px - 64px);
-        margin: 0 16px;
-      }
+    // 因為 main 不在 Sidebar 這裡渲染，所以 #main 要放在 global 裡面才能選中
+    :global(.sidebar-left #main),
+    :global(.sidebar-right #main) {
+      padding: 0;
+      width: 73%;
+      // #main 可用的最大寬度 = 100% - sidebar 最小寬度 (268) - sidebar 和 main 的外距 (左右 32 * 2)
+      max-width: calc(100% - 268px - 64px);
+      margin: 0 16px;
     }
   }
 
