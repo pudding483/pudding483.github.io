@@ -198,6 +198,12 @@ export default {
       desc: "CTF player | Reverser",
       avatar: "/images/friend-avatars/Adb2.webp",
     },
+    {
+      name: "dkri3c1",
+      url: "https://dkri3c1.github.io/",
+      desc: "Pentest Learner",
+      avatar: "/images/friend-avatars/dkri3c1.webp",
+    },
   ],
 
   copyright: {
