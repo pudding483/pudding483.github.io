@@ -7,6 +7,7 @@ import Footer from "../../../components/Footer.astro";
 import CategoryList from "../../../components/partial/CategoryList.astro";
 import HeaderTitle from "../../../components/partial/header/HeaderTitle.astro";
 import ArchiveList from "../../../components/ArchiveList.astro";
+import Pagination from "../../../components/Pagination.astro";
 import { BASE_URL } from "../../../utils/config";
 
 // 與 page 類似，但是這裡多了 [category] 參數，代表有兩層的動態路由
@@ -38,7 +39,8 @@ export async function getStaticPaths({ paginate }: { paginate: Function }) {
         // categoryMap[1] 是該類別的文章列表
         params: { category: categoryMap[0] },
         props: { categories },
-        pageSize: 5,
+        // 類別頁面每類顯示幾篇文章
+        pageSize: 7,
       });
     });
 }
@@ -74,6 +76,14 @@ const { category } = Astro.params;
       <CategoryList categories={[...categories]} />
       <ArchiveList page={page} type="archives" />
     </div>
+    <Pagination
+      prevUrl={page.url.prev}
+      nextUrl={page.url.next}
+      currentPage={page.currentPage}
+      lastPage={page.lastPage}
+      url={`/categories/${category}`}
+      variant="solid"
+    />
   </section>
   <!-- Footer -->
   <Footer slot="footer" />

@@ -220,18 +220,21 @@ const { page } = Astro.props;
     // -webkit-backdrop-filter: blur(8px);
 
     // 根據 PostWrapTransparencyScript 的重和值，決定透明範圍
-    // var(--post-wrap-overlap-px, 0px) 的 0px 是預設值，避免出錯
+    // 目前策略：只要有 overlap 就整張統一透明，不再使用漸層
     &.has-bottom-overlap {
-      background: linear-gradient(
-        to top,
-        color-mix(in srgb, var(--color-wrap), transparent 90%) 0,
-        color-mix(in srgb, var(--color-wrap), transparent 90%)
-          var(--post-wrap-overlap-fade-start-px, 0px),
-        color-mix(in srgb, var(--color-wrap), transparent 75%)
-          var(--post-wrap-overlap-px, 0px),
-        var(--color-wrap) var(--post-wrap-overlap-px, 0px),
-        var(--color-wrap) 100%
-      );
+      // 舊方案：依照 overlap 區域套用漸層，容易出現接縫色差
+      // background: linear-gradient(
+      //   to top,
+      //   color-mix(in srgb, var(--color-wrap), transparent 90%) 0,
+      //   color-mix(in srgb, var(--color-wrap), transparent 90%)
+      //     var(--post-wrap-overlap-fade-start-px, 0px),
+      //   color-mix(in srgb, var(--color-wrap), transparent 75%)
+      //     var(--post-wrap-overlap-px, 0px),
+      //   var(--color-wrap) var(--post-wrap-overlap-px, 0px),
+      //   var(--color-wrap) 100%
+      // );
+      // 直接維持透明度的一致性
+      background: color-mix(in srgb, var(--color-wrap), transparent 75%);
 
       // 被 hover 就變成幾乎實心
       &:hover {
@@ -240,11 +243,13 @@ const { page } = Astro.props;
     }
 
     &.is-full-bottom-overlap {
-      background: linear-gradient(
-        to top,
-        color-mix(in srgb, var(--color-wrap), transparent 90%) 0,
-        color-mix(in srgb, var(--color-wrap), transparent 75%) 100%
-      );
+      // 舊方案：全重疊時也使用漸層
+      // background: linear-gradient(
+      //   to top,
+      //   color-mix(in srgb, var(--color-wrap), transparent 90%) 0,
+      //   color-mix(in srgb, var(--color-wrap), transparent 75%) 100%
+      // );
+      background: color-mix(in srgb, var(--color-wrap), transparent 75%);
 
       &:hover {
         background: color-mix(in srgb, var(--color-wrap), transparent 20%);
@@ -269,7 +274,7 @@ const { page } = Astro.props;
       margin-bottom: 20px;
 
       flex-direction: column;
-      
+
       &.right {
         flex-direction: column;
       }
@@ -277,8 +282,9 @@ const { page } = Astro.props;
   }
 
   /* 深色模式下的 box 陰影，目的是讓卡片看起來會浮起來 */
-  :global([data-theme='dark'])  {
-    .post-wrap.left, .post-wrap.right {
+  :global([data-theme="dark"]) {
+    .post-wrap.left,
+    .post-wrap.right {
       box-shadow: var(--shadow-card);
     }
   }
@@ -387,7 +393,7 @@ const { page } = Astro.props;
 
     position: relative;
     overflow: hidden;
-    
+
     /* 防止擠壓變形 */
     flex-shrink: 0;
     /* 滑鼠能穿透，點擊到下面的 post-link */
@@ -425,7 +431,7 @@ const { page } = Astro.props;
       height: 100%;
       /* 關鍵，圖片填滿而不變形 */
       object-fit: cover;
-      
+
       left: 0;
       top: 0;
 
@@ -456,10 +462,10 @@ const { page } = Astro.props;
     width: 100%;
 
     position: relative;
-    
+
     /* 建立一個新的堆疊上下文，確保背景圖不會跑到 Wrapper 外面 */
     /* 這個堆疊是不可被插入的 (不受外界 index 影響) */
-    isolation: isolate; 
+    isolation: isolate;
   }
 
   /* 當窄螢幕下 Bottom Banner 會被隱藏時，Pagination 回到 archive 的實心樣式 */
@@ -483,5 +489,4 @@ const { page } = Astro.props;
       background: var(--red-2);
     }
   }
-
 </style>

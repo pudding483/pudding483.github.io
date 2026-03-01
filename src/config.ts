@@ -53,14 +53,6 @@ export default {
     powered: true,
     count: true,
     busuanzi: true,
-    // icp: {
-    //   icpnumber: "",
-    //   beian: "",
-    //   recordcode: "",
-    // },
-    // moe_icp: {
-    //   icpnumber: "",
-    // },
   },
 
   analytics: {
@@ -181,12 +173,6 @@ export default {
 
   friend: [
     {
-      name: "D-Sketon",
-      url: "https://d-sketon.github.io/",
-      desc: "Main Site with hexo-theme-reimu",
-      avatar: "https://d-sketon.github.io/avatar/avatar.webp",
-    },
-    {
       name: "CHW",
       url: "https://chw41.github.io/",
       desc: "Red Team | Party Engineer",
@@ -270,7 +256,7 @@ export default {
     enable: true,
     content: [
       {
-        categories: "Blog",
+        categories: "CTF-WEB",
         cover: "/images/SAO_2014.webp",
       },
     ],

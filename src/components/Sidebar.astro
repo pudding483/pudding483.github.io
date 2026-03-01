@@ -115,26 +115,38 @@ const { isPost = false, headings = [], toc = true } = Astro.props;
 
   :global(#sidebar .sidebar-wrap.has-bottom-overlap),
   :global(#sidebar .widget-wrap.has-bottom-overlap) {
-    background: linear-gradient(
-      to top,
-      color-mix(in srgb, var(--color-wrap), transparent 90%) 0,
-      color-mix(in srgb, var(--color-wrap), transparent 90%)
-        var(--sidebar-overlap-fade-start-px, 0px),
-      color-mix(in srgb, var(--color-wrap), transparent 75%)
-        var(--sidebar-overlap-px, 0px),
-      var(--color-wrap) var(--sidebar-overlap-px, 0px),
-      var(--color-wrap) 100%
-    );
+    // 舊方案：依照 overlap 區域套用漸層，容易影響到上半區視覺
+    // background: linear-gradient(
+    //   to top,
+    //   color-mix(in srgb, var(--color-wrap), transparent 90%) 0,
+    //   color-mix(in srgb, var(--color-wrap), transparent 90%)
+    //     var(--sidebar-overlap-fade-start-px, 0px),
+    //   color-mix(in srgb, var(--color-wrap), transparent 75%)
+    //     var(--sidebar-overlap-px, 0px),
+    //   var(--color-wrap) var(--sidebar-overlap-px, 0px),
+    //   var(--color-wrap) 100%
+    // );
+    background: color-mix(in srgb, var(--color-wrap), transparent 90%);
   }
 
   :global(#sidebar .sidebar-wrap.is-full-bottom-overlap),
   :global(#sidebar .widget-wrap.is-full-bottom-overlap) {
-    background: linear-gradient(
-      to top,
-      color-mix(in srgb, var(--color-wrap), transparent 90%) 0,
-      color-mix(in srgb, var(--color-wrap), transparent 75%) 100%
-    );
+    // 舊方案：全重疊時也使用漸層
+    // background: linear-gradient(
+    //   to top,
+    //   color-mix(in srgb, var(--color-wrap), transparent 90%) 0,
+    //   color-mix(in srgb, var(--color-wrap), transparent 75%) 100%
+    // );
+    background: color-mix(in srgb, var(--color-wrap), transparent 90%);
   }
+
+  // 當 hover 時加上背景
+  // :global(#sidebar .sidebar-wrap.has-bottom-overlap:hover),
+  // :global(#sidebar .widget-wrap.has-bottom-overlap:hover),
+  // :global(#sidebar .sidebar-wrap.is-full-bottom-overlap:hover),
+  // :global(#sidebar .widget-wrap.is-full-bottom-overlap:hover) {
+  //   background: color-mix(in srgb, var(--color-wrap), transparent 20%);
+  // }
 
   /* 從 sidebar 頂部(大頭貼) 到底部(標籤區塊) */
   .sidebar-wrapper-container {

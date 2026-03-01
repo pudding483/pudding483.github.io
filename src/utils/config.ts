@@ -1,7 +1,7 @@
-// 1. export interface ...    定義形狀/藍圖
-// 2. import ...              引入原始資料
-// 3. const typedConfig = ... 把原始資料套用到藍圖
-// 4. export const ...        輸出給其他檔案使用
+﻿// 1. export interface ...    摰儔敶Ｙ?/??
+// 2. import ...              撘??鞈?
+// 3. const typedConfig = ... ??憪????典??
+// 4. export const ...        頛詨蝯血隞?獢蝙??
 export interface SiteConfig {
   title: string;
   subtitle: string;
@@ -30,12 +30,12 @@ export interface BannerSrcSetConfig {
   }[];
 }
 
-// 這裡新增一個專門控制翻譯功能的 interface，讓 config.ts 的結構更清晰
+// ?ㄐ?啣?銝????批蝧餉陌???interface嚗? config.ts ??瑽皜
 export interface TranslationConfig {
   enable: boolean;
 }
 
-// 新增底部大圖，其為可選
+// ?啣?摨憭批?嚗?箏??
 export interface BottomBannerConfig {
   enable: boolean;
   src: string;
@@ -43,18 +43,10 @@ export interface BottomBannerConfig {
 
 export interface FooterConfig {
   // since: number;
-  since: number | string; // 允許 string 類型，就能寫 年份/月份
+  since: number | string; // ?迂 string 憿?嚗停?賢神 撟港遢/?遢
   powered: boolean;
   count: boolean;
   busuanzi: boolean;
-  icp?: {
-    icpnumber: string;
-    beian: string;
-    recordcode: string;
-  };
-  moe_icp?: {
-    icpnumber: string;
-  };
 }
 
 export interface AnalyticsConfig {
@@ -223,7 +215,7 @@ const typedConfig = config as {
   menu: MenuConfig[];
   banner: string;
   banner_srcset: BannerSrcSetConfig;
-  translation: TranslationConfig; // 新增這個區塊，專門控制翻譯功能
+  translation: TranslationConfig; // ?啣???憛?撠??批蝧餉陌?
   bottom_banner: BottomBannerConfig;
   footer: FooterConfig;
 
@@ -255,8 +247,8 @@ export const WIDGETS = typedConfig.widgets;
 export const MENU = typedConfig.menu;
 export const BANNER = typedConfig.banner;
 export const BANNER_SRCSET = typedConfig.banner_srcset;
-export const TRANSLATION = typedConfig.translation; // 新增這個區塊，專門控制翻譯功能
-export const BOTTOM_BANNER = typedConfig.bottom_banner; // 新增底部大圖，可選
+export const TRANSLATION = typedConfig.translation; // ?啣???憛?撠??批蝧餉陌?
+export const BOTTOM_BANNER = typedConfig.bottom_banner; // ?啣?摨憭批?嚗??
 export const FOOTER = typedConfig.footer;
 
 export const SOCIAL = typedConfig.social;
@@ -290,16 +282,16 @@ export const SPONSOR = typedConfig.sponsor;
 // }
 // export const BASE_URL = _BASE_URL;
 
-// 避免出現 '/undefined/undefined' 的情況
+// ?踹??箇 '/undefined/undefined' ??瘜?
 let _BASE_URL = import.meta.env.BASE_URL ?? "/";
 
-// 1. 如果最後面有 /，先去掉
+// 1. 憒??敺??/嚗??餅?
 if (_BASE_URL.endsWith("/")) {
   _BASE_URL = _BASE_URL.slice(0, -1);
 }
 
-// 2. 只有當 _BASE_URL "不為空" 且 "不是以 / 開頭" 時，才補上 /
-// 這樣如果是在根目錄，_BASE_URL 就會保持為空字串 ""，不會變成 "//"
+// 2. ?芣???_BASE_URL "銝蝛? 銝?"銝隞?/ ?" ????銝?/
+// ?見憒??臬?寧??_BASE_URL 撠望?靽??箇征摮葡 ""嚗?????"//"
 if (_BASE_URL && !_BASE_URL.startsWith("/")) {
   _BASE_URL = `/${_BASE_URL}`;
 }
@@ -309,3 +301,4 @@ export const BASE_URL = _BASE_URL;
 export const SITE_URL = import.meta.env.SITE.endsWith("/")
   ? import.meta.env.SITE.slice(0, -1)
   : import.meta.env.SITE;
+
