@@ -462,4 +462,26 @@ const { page } = Astro.props;
     isolation: isolate; 
   }
 
+  /* 當窄螢幕下 Bottom Banner 會被隱藏時，Pagination 回到 archive 的實心樣式 */
+  @media screen and (max-width: 767px) {
+    :global(#page-nav.is-glass) {
+      border: none;
+      background: var(--color-wrap);
+    }
+
+    :global(#page-nav.is-glass:hover) {
+      border-color: transparent;
+      background: var(--color-wrap);
+    }
+
+    :global(#page-nav.is-glass .current) {
+      background: var(--red-1);
+      box-shadow: var(--shadow-red-6-shadow);
+    }
+
+    :global(#page-nav.is-glass .current:hover) {
+      background: var(--red-2);
+    }
+  }
+
 </style>

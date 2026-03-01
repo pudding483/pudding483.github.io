@@ -1,0 +1,30 @@
+---
+title: "TSC CTF 2026 WEB : Thinking Face"
+# author: "483"
+description: "2026 TSC 公開組"
+pubDate: "Mar 01 2026"
+categories: ["CTF-WEB"]
+tags: ["CTF-Writeups", "TSC-2026"]
+
+excerpt: |
+  關於 2026 TSC CTF web 題目 🤔Thinking Face 的解題思路
+  上傳以及下載沒有進行權限驗證 => python site_package 投毒
+---
+
+import AlertBlockquote from "@/components/mdx/AlertBlockquote.astro"; // 用 @/ 代表 src/
+import Color from "@/components/mdx/Color.astro";
+import Details from "@/components/mdx/Details.astro";
+
+# TSC CTF 2026 WEB : 🤔Thinking Face
+
+## <Color c="red-0">題目</Color>
+
+![image](@assets/blog-images/2026/tsc/thinking-face/question.png)
+
+## <Color c="red-0">解題過程</Color>
+
+1. 首先跟進到題目網頁，
+
+![image full](@assets/blog-images/2026/tsc/thinking-face/flag.png)
+
+- **flag🚩 : `TSC{Tr3ndy_AI_W17h_0ld_f4sh1on__0030684b051c4a97b3cd0ef824f45aa0}`**

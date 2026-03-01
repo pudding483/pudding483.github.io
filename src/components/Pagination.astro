@@ -92,13 +92,17 @@ const upperBound = currentPage + 2 < lastPage ? currentPage + 2 : lastPage;
       // 毛玻璃效果並不好，取消使用
       // backdrop-filter: blur(8px);
       // -webkit-backdrop-filter: blur(8px);
-      
+
       // border: 1px solid color-mix(in srgb, var(--color-wrap), transparent 70%);
+      // 只有 hover 才加 border，會有先白後黑的視覺跳動 (從 none 到半透) ，所以加上這行
+      border: 1px solid transparent;
       background: color-mix(in srgb, var(--color-wrap), transparent 100%);
 
       // 控制當有 bottom banner 的情況，被 hover 時為了讓使用者更清楚有選到，改變背景顏色
       &:hover {
-        border: 1px solid color-mix(in srgb, var(--color-wrap), transparent 70%);
+        // 舊方案：直接切換 border 屬性
+        // border: 1px solid color-mix(in srgb, var(--color-wrap), transparent 70%);
+        border-color: color-mix(in srgb, var(--color-wrap), transparent 70%);
         background: color-mix(in srgb, var(--color-wrap), transparent 40%);
       }
 
