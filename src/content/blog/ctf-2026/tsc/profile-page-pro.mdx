@@ -52,8 +52,10 @@ if (req.query.setdown === "1") {
 
 <br />
 - profile 是 `Object.freeze({ name, bio, photo })`
-- 而且如果 profile.name 是一個字串，在 js 中對唯獨屬性做 ++ 是<Color c="red-0">不會</Color>
-  改變字串本身的長度。後續如果我要猜 flag 的第 3 位，我就在 bio 的第 3 位進行對應的處理
+- 而且如果 profile.name 是一個字串，在 js 中對唯讀屬性做 ++ 是<Color c="red-0">不會</Color>
+  改變字串本身的長度。
+- 代表後續如果我要猜 flag 的第 3 位，那 profile.name 的長度就控制成 2 `FLAG[profile.name.length] = FLAG[2]`，
+  也就是在 bio 的第 3 位進行猜測
 
 ```js
 app.post('/setup', upload.single('profile_photo'), (req, res) => {
