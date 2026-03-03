@@ -23,7 +23,132 @@ import Details from "@/components/mdx/Details.astro";
 
 ## <Color c="red-0">解題過程</Color>
 
-1. ...
+1. 從 `server.lua` 中我們能發現 `load(code, "user", "t", env)` ，把送出的 body 當 Lua 程式
+   執行所以這是一個 cmdi 類型的題目，從題目名稱也能佐證是 jailbreak
+
+![image](@assets/blog-images/2026/tsc/modern-jail/verify-main-logic.png)
+![image](@assets/blog-images/2026/tsc/modern-jail/how-execute-work.png)
+
+&emsp;
+
+2. Code audit ，仔細查看會發現，在真正 load 之前，有經過 `build_safe_env()` ，這個函式
+   前面定義了很多變數，目的是為了做到清除像是 string 對於 table 內敏感元素的關聯，所以定義了
+   `safe_string` 這個新的 table ，用來用來取代完整的原生 string 模組。透過僅複製了特定安全函式
+   的 reference ，清空原本的防止攻擊者透過 Table 屬性遍歷去存取到不在白名單內的危險欄位(函式、元素)
+
+<AlertBlockquote
+  type="info"
+  title="關於 Lua 的表索引路徑 (table indexing path)"
+>
+  Lua 沒有類別的概念，注意這並不是說 Lua
+  沒有物件的概念，畢竟類別不是物件的唯一來源。而 Lua 中用來實作物件(鍊)的就是
+  table ，可以使用多個 table ，配合 Lua 語法糖 `:` 把前一個動作的 output
+  當成下一個動作的 self 傳入
+</AlertBlockquote>
+
+{/* prettier-ignore */}
+<AlertBlockquote
+  type="info"
+  title="關於 Lua 的變數宣告"
+>
+  Lua 5.1 中，未宣告 local
+  的變數會被編譯成對當前函式環境表的存取；預設環境通常是 `_G` ，但可被替換\
+  在官方文件 [Section 2.4.3 - Assignment](https://www.lua.org/manual/5.1/manual.html#2.4.3) 
+  就有提到：\
+  An assignment to a global variable `x = val` is equivalent to the assignment `_env.x = val`\
+  而在 [Section 2.3 - Variables](http://lua.org/manual/5.1/manual.html#2.3) 也提到了
+  <Color c="red-0">任何變數預設都是全域變數</Color>：\
+  Any variable is assumed to be global unless explicitly declared as a local
+</AlertBlockquote>
+
+<Details summary="移除了哪些內容">
+
+```lua
+local function execute(code)
+	module = nil
+	_G = nil
+	os = nil
+	io = nil
+	package = nil
+	dofile = nil
+	loadfile = nil
+	...
+end
+```
+
+</Details>
+
+&emsp;
+
+3. 那麼問題出在哪裡呢？真正的問題點在於 `setmetatable` 這個 table ，
+
+<Details summary="移除後剩餘的內容">
+
+```lua
+local function fail(status, msg)
+	ngx.status = status
+	ngx.say(msg)
+	return ngx.exit(status)
+end
+
+local blacklist = { "os", "io", "package", "require", "debug", "_G", "loadfile",
+  "dofile", "getfenv", "load" }
+
+local function is_blocked(body)
+	local lower = body:lower()
+	for _, k in ipairs(blacklist) do
+		if lower:find(k, 1, true) then
+			return true
+		end
+	end
+	return false
+end
+
+local function build_safe_env()
+	local safe_string = {
+		byte = string.byte,
+		char = string.char,
+		sub = string.sub,
+		gmatch = string.gmatch,
+		gsub = string.gsub,
+		format = string.format,
+		rep = string.rep,
+		dump = string.dump,
+	}
+
+	local safe = {
+		assert = assert,
+		error = error,
+		pcall = pcall,
+		xpcall = xpcall,
+		tostring = tostring,
+		tonumber = tonumber,
+		type = type,
+		select = select,
+		pairs = pairs,
+		ipairs = ipairs,
+		next = next,
+		rawget = rawget,
+		rawset = rawset,
+		setmetatable = setmetatable,
+		getmetatable = getmetatable,
+		math = math,
+		string = safe_string,
+		table = table,
+		utf8 = utf8,
+	}
+
+	-- Intentional flaw: expose fallback to real globals
+	setmetatable(safe, {
+		__index = function(_, k)
+			return rawget(_G, k)
+		end,
+	})
+	return safe
+end
+```
+
+</Details>
 
 ![image full](@assets/blog-images/2026/tsc/modern-jail/flag.png)
 

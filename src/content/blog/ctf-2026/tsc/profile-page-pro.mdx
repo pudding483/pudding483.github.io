@@ -89,7 +89,7 @@ app.post('/setup', upload.single('profile_photo'), (req, res) => {
 
 - 用一個簡單的小方法證明這一點，下圖是我直接在 browser console 測試的
 
-![image](@assets/blog-images/2026/tsc/profile-page-pro/little_proof.png)
+![image](@assets/blog-images/2026/tsc/profile-page-pro/little-proof.png)
 
 &emsp;
 
@@ -275,7 +275,7 @@ for i in range(len(KNOWN_FLAG), 50):
   改成 <br />
   `charset = "etaoinshrdlcumwfgypbvkjxqz_0123456789}"`
 
-![image](@assets/blog-images/2026/tsc/profile-page-pro/question_desc.png)
+![image](@assets/blog-images/2026/tsc/profile-page-pro/question-desc.png)
 
 <Details summary="在 step 6 的 script 補上這段，讓建立與銷毀 instance 自動化">
 
@@ -342,13 +342,17 @@ def reset_instance():
     sys.exit(1)
 ```
 
-</ Details>
+</Details>
 
 - 先使用已知的 flag prefix 確定 script 能夠正確運作
 
-![image full](@assets/blog-images/2026/tsc/profile-page-pro/proof_of_script_work.png)
+![image full](@assets/blog-images/2026/tsc/profile-page-pro/proof-of-script-work.png)
 
-8. 最終 flag 內容
+&emsp;
+
+8. 一些過程以及最終 flag 內容
+
+![image full](@assets/blog-images/2026/tsc/profile-page-pro/solving-process.png)
 
 ![image full](@assets/blog-images/2026/tsc/profile-page-pro/flag.png)
 
