@@ -81,37 +81,27 @@ const upperBound = currentPage + 2 < lastPage ? currentPage + 2 : lastPage;
 </nav>
 
 <style lang="scss">
-  // :global(html:not(.has-active-bottom-banner)) #page-nav.is-glass {
-  //   border-color: transparent;
-  //   background: var(--color-wrap);
-  // }
+  // :global(html:not(.bottom-bg-active)) {
+  //   #page-nav.is-glass {
+  //     border-color: transparent;
+  //     background: var(--color-wrap);
 
-  // :global(html:not(.has-active-bottom-banner)) #page-nav.is-glass:hover {
-  //   border-color: transparent;
-  //   background: var(--color-wrap);
-  // }
+  //     &:hover {
+  //       border-color: transparent;
+  //       background: var(--color-wrap);
+  //     }
 
-  :global(html:not(.bottom-bg-active)) {
-    #page-nav.is-glass {
-      border-color: transparent;
-      background: var(--color-wrap);
+  //     .current {
+  //       background: var(--red-1);
+  //       box-shadow: var(--shadow-red-6-shadow);
 
-      &:hover {
-        border-color: transparent;
-        background: var(--color-wrap);
-      }
-
-      .current {
-        background: var(--red-1);
-        box-shadow: var(--shadow-red-6-shadow);
-
-        &:hover {
-          background: var(--red-2);
-        }
-      }
-    }
+  //       &:hover {
+  //         background: var(--red-2);
+  //       }
+  //     }
+  //   }
     
-  }
+  // }
   
   #page-nav {
     margin: 36px auto;
@@ -145,6 +135,25 @@ const upperBound = currentPage + 2 < lastPage ? currentPage + 2 : lastPage;
         &:hover {
           border-color: transparent;
           background: var(--color-wrap);
+        }
+      }
+
+      &.is-solid-fallback {
+        border-color: transparent;
+        background: var(--color-wrap);
+
+        &:hover {
+          border-color: transparent;
+          background: var(--color-wrap);
+        }
+
+        .current {
+          background: var(--red-1);
+          box-shadow: var(--shadow-red-6-shadow);
+
+          &:hover {
+            background: var(--red-2);
+          }
         }
       }
 

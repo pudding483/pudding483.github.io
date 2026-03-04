@@ -16,15 +16,15 @@ import { urlFor } from "../utils/urlFor";
 
 <script>
   function activateBottomBg() {
-    const root = document.documentElement;
-    if (!root) return;
-    root.classList.add("bottom-bg-active");
+    const pageNav = document.getElementById("page-nav");
+    if (!pageNav) return;
+    pageNav.classList.remove("is-solid-fallback");
   }
 
   function deactivateBottomBg() {
-    const root = document.documentElement;
-    if (!root) return;
-    root.classList.remove("bottom-bg-active");
+    const pageNav = document.getElementById("page-nav");
+    if (!pageNav) return;
+    pageNav.classList.add("is-solid-fallback");
   }
 
   // 這裡放入檢查邏輯，保持 index.astro 乾淨
