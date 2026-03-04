@@ -45,7 +45,7 @@ export default {
 
   bottom_banner: {
     enable: true,
-    src: "/images/Quintuplets-2048x865.webp",
+    src: "/images/bottom-banner.webp",
   },
 
   footer: {

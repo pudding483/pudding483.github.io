@@ -10,7 +10,9 @@
       document.querySelector<HTMLElement>(".bottom-bg-container");
     const targets = Array.from(
       document.querySelectorAll<HTMLElement>(
-        "#sidebar .sidebar-wrap, #sidebar .widget-wrap",
+        // sidebar-wrap 並沒有 css 的背景樣式
+        // "#sidebar .sidebar-wrap, #sidebar .widget-wrap",
+        "#sidebar .widget-wrap",
       ),
     );
 

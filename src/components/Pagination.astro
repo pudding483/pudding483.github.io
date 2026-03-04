@@ -26,12 +26,12 @@ const upperBound = currentPage + 2 < lastPage ? currentPage + 2 : lastPage;
 ---
 
 {/* AOS 實作於 AfterFooter ， fade-up 為捲動的動畫效果 */}
+{/* 新增一個 class ，用來控制當 BOTTOM_BANNER 存在時，底部頁碼欄位會變淡 */}
 <nav
   id="page-nav"
   data-aos="fade-up"
   class:list={[{ "is-glass": variant === "glass" }]}
 >
-  {/* 新增一個 class ，用來控制當 BOTTOM_BANNER 存在時，底部頁碼欄位會變淡 */}
   {
     prevUrl && (
       <a href={`${BASE_URL}${prevUrl}`} class="extend prev" rel="prev">
@@ -81,6 +81,26 @@ const upperBound = currentPage + 2 < lastPage ? currentPage + 2 : lastPage;
 </nav>
 
 <style lang="scss">
+  // :global(html:not(.has-active-bottom-banner)) #page-nav.is-glass {
+  //   border-color: transparent;
+  //   background: var(--color-wrap);
+  // }
+
+  // :global(html:not(.has-active-bottom-banner)) #page-nav.is-glass:hover {
+  //   border-color: transparent;
+  //   background: var(--color-wrap);
+  // }
+
+  :global(html:not(.bottom-bg-active)) #page-nav.is-glass {
+    border-color: transparent;
+    background: var(--color-wrap);
+  }
+
+  :global(html:not(.bottom-bg-active)) #page-nav.is-glass:hover {
+    border-color: transparent;
+    background: var(--color-wrap);
+  }
+  
   #page-nav {
     margin: 36px auto;
 
@@ -104,6 +124,16 @@ const upperBound = currentPage + 2 < lastPage ? currentPage + 2 : lastPage;
         // border: 1px solid color-mix(in srgb, var(--color-wrap), transparent 70%);
         border-color: color-mix(in srgb, var(--color-wrap), transparent 70%);
         background: color-mix(in srgb, var(--color-wrap), transparent 40%);
+      }
+
+      @media screen and (max-width: 767px) {
+        border-color: transparent;
+        background: var(--color-wrap);
+
+        &:hover {
+          border-color: transparent;
+          background: var(--color-wrap);
+        }
       }
 
       .current {

@@ -15,25 +15,43 @@ import { urlFor } from "../utils/urlFor";
 </div>
 
 <script>
-  // 這裡放入原本的檢查邏輯，保持 index.astro 乾淨
+  function activateBottomBg() {
+    const root = document.documentElement;
+    if (!root) return;
+    root.classList.add("bottom-bg-active");
+  }
+
+  function deactivateBottomBg() {
+    const root = document.documentElement;
+    if (!root) return;
+    root.classList.remove("bottom-bg-active");
+  }
+
+  // 這裡放入檢查邏輯，保持 index.astro 乾淨
   function checkBackgroundCollision() {
     const bottomImg = document.querySelector(".bottom-bg-img");
     const footer = document.getElementById("footer");
 
-    if (!bottomImg) return; // 如果沒有圖片就跳出
+    if (!bottomImg) {
+      deactivateBottomBg();
+      return;
+    } // 如果沒有圖片就跳出
 
     const bodyHeight = document.body.scrollHeight;
     const windowHeight = window.innerHeight;
+    const isNarrowScreen = window.matchMedia("(max-width: 767px)").matches;
 
     // 如果內容太少（比視窗高度還小），隱藏底部圖，避免跟 banner 打架
-    if (bodyHeight < windowHeight * 1.5) {
+    if (isNarrowScreen || bodyHeight < windowHeight * 1.5) {
       bottomImg.classList.add("hide-bottom-bg");
+      deactivateBottomBg();
       // 如果沒有底部圖 footer 就維持原本的大小
       if (footer) {
         footer.classList.remove("has-bottom-banner");
       }
     } else {
       bottomImg.classList.remove("hide-bottom-bg");
+      activateBottomBg();
       // footer 加上 bottom-banner 這個 class 讓底部空間變大
       if (footer) {
         footer.classList.add("has-bottom-banner");
@@ -49,7 +67,7 @@ import { urlFor } from "../utils/urlFor";
 <style lang="scss">
   .bottom-bg-container {
     width: 100%;
-    height: 600px;
+    height: 700px;
 
     position: absolute;
     bottom: 0;
