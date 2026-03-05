@@ -23,7 +23,28 @@ import Details from "@/components/mdx/Details.astro";
 
 ## <Color c="red-0">解題過程</Color>
 
-1. 看一下給的 source code ，在 `index.js` 中可以看到 `app.get('/', ...)` 的 router 中，有一個和 flag 有關的函式
+1. 看一下給的 source code ，在 `index.js` 中， `renderProfile` 會使用自己寫的 `pageShell` 渲染 html 頁面，
+   而 `app.get('/', ...)` 的 router 中，有一個唯一和 flag 有關的函式
+
+```js
+const pageShell = (title, body) => `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>${title}</title>
+    <style>
+    ...
+  </head>
+  <body>
+    <div class="container">
+      <div class="card">
+        ${body}
+      </div>
+    </div>
+  </body>
+</html>
+```
 
 ```js
 if (req.query.setdown === "1") {
@@ -40,7 +61,8 @@ if (req.query.setdown === "1") {
 - 如果有 `?setdown=1` 就能夠進內層 if 判斷式
 - 看起來很複雜，但是拆解一下會發現由於 `+[]` 轉型為 0 且 `![]` 轉型為 false (在數學運算中等同於 0)
 - 所以 `+[] + profile.name.length++ + ![]` 實際上等於 `profile.name.length`
-- 那麼整個內層 if 判斷式就相當於比較 `FLAG[profile.name.length] ===  profile.bio[profile.name.length] && !Object.hasOwn(profile, "toString")`
+- 那麼整個內層 if 判斷式就相當於比較
+  `FLAG[profile.name.length] ===  profile.bio[profile.name.length] && !Object.hasOwn(profile, "toString")`
 
 &emsp;
 
@@ -48,7 +70,8 @@ if (req.query.setdown === "1") {
    prototype pollution 嘗試 leak 出 flag ，但是 profile 本身是正常的 JSON 格式，那 `!Object.hasOwn(profile, 'toString')`
    就會恆真，代表前面的<br />
    `FLAG[profile.name.length] ===  profile.bio[profile.name.length] && !Object.hasOwn(profile, "toString")`<br />
-   等價於 `FLAG[profile.name.length] === profile.bio[profile.name.length]`
+   等價於 <br />
+   `FLAG[profile.name.length] === profile.bio[profile.name.length]`
 
 <br />
 - profile 是 `Object.freeze({ name, bio, photo })`
@@ -78,14 +101,21 @@ app.post('/setup', upload.single('profile_photo'), (req, res) => {
 &emsp;
 
 3. 之所以前面這串 if 需要拆解，就是為了進入 if 迴圈，執行 `FLAG = !++req./*^_^*/query./*^_^*/setdomn/*^_^*/;` ，
-   `/*...*/` 就是 js 的註解，所以前面這一整段相當於 `FLAG = !++req.query.setdomn;` 。關鍵是 js 在運算 `++obj` 時
-   ，因為有 `++` 的存在 (hint number)， Node.js 的 v8 引擎會：<br />
+   `/*...*/` 就是 js 的註解，所以前面這一整段相當於 `FLAG = !++req.query.setdomn;` 。關鍵在運算 `++req.query.setdomn`
+   這個屬性值時，因為有 `++` 的存在 (hint number)， Node.js 的 v8 引擎會：<br />
 
-   (1) ToPrimitive (把物件轉換回原始型別)<br />
+   (1) `Symbol.toPrimitive`: 物件轉換回原始型別的專屬轉型函式，原始型別有： string, number, bigint, boolean, undefined, symbol, null
 
-   (2) 普通物件先試 `valueOf()`，若不是 primitive (原始型別) 再嘗試 toString()<br />
+   (2) 普通物件先試 `valueOf()` ，看能不能拿回像是 number 或是 string 這些原始型別 (primitive) <br />
 
-   (3) `toString()` 函式的回傳是字串就轉換成 number<br />
+   (3) 若結果不是原始型別再嘗試 `toString()` <br />
+
+<AlertBlockquote type="info" title="toString( ) 之後做了什麼">
+  以本題來說，普通物件最後經過 toString() 會拿到字串 '[object Object]' ，再經過
+  ++ 運算子會把字串轉成 number 得到 NaN
+</AlertBlockquote>
+
+- Symbol.toPrimitive 是一個 key ，它可以用來掛載一個函式，像是 `[Symbol.toPrimitive]: function(...) {...}`
 
 - 用一個簡單的小方法證明這一點，下圖是我直接在 browser console 測試的
 
@@ -93,11 +123,26 @@ app.post('/setup', upload.single('profile_photo'), (req, res) => {
 
 &emsp;
 
-4. 繼續拆解。如果沒有進入 if 迴圈，程式還是會繼續執行，重點在於後續的 `renderSetupForm({})` ，
-   一切正常的情況下 HTTP status 就是 200 沒問題。但是當我們二次創建 profile 時，會因為這個函式
-   凍住 profile ，導致必須建一個新的 profile
+4. 那麼當我直接修改 `toString()` 這個函式， if 判斷式出錯沒正常執行後續的 JS ，就能創造出 side-channel attack
+   的效果 — 猜對 flag 特定位元時， HTTP 狀態碼會出錯 (因為 `toString()` 被我修改了)；猜錯的話就進不去 if 判斷式<br />
+   ( step 2 強調 if 判斷等價 `FLAG[profile.name.length] === profile.bio[profile.name.length]`)
 
-<Details summary="GET / 的 route">
+<br />
+
+- JS 物件原型鍊的 `toString()` 來自 `Object.prototype.toString` ，但是如果把這個物件加上 `toString()=x` 屬性值，
+  Node.js v8 引擎就會先採用我加上的這個屬性值 `x`
+- 所以我可以對 `/` 做 GET 請求的同時， query string 使用 `?setdown=1&setdomn[toString]=x`
+  ，這樣就能做到 side-channel attack
+
+<AlertBlockquote type="info" title="注意 setdown 和 setdomn 是不一樣的" />
+
+![image](@assets/blog-images/2026/tsc/profile-page-pro/setdown-and-setdomn.png)
+
+&emsp;
+
+5. 繼續拆解。如果沒有進入 if 迴圈，程式還是會繼續執行，重點在於後續的 `renderSetupForm({})` ，
+   一切正常的情況下 HTTP status 就是 200 沒問題。但是當二次創建 profile 時，會因為這個函式凍住 profile
+   ，導致必須建一個新的 profile
 
 ```js
 app.get("/", (req, res) => {
@@ -115,7 +160,6 @@ app.get("/", (req, res) => {
 });
 ```
 
-</Details>
 <Details summary="SetupForm">
 
 ```js
@@ -138,6 +182,7 @@ const renderSetupForm = ({ error, name = "", bio = "" }) => {
 ```
 
 </Details>
+
 <Details summary="由 SetupForm call 的 /setup 會 freeze ，強迫重建新的 profile">
 
 ```js
@@ -180,24 +225,7 @@ app.post('/setup', upload.single('profile_photo'), (req, res) => {
 
 &emsp;
 
-5. 那麼當我直接修改 `toString()` 這個函式， if 判斷式出錯沒正常執行後續的 JS ，就能創造出 side-channel attack
-   的效果 — 猜對 flag 特定位元時， HTTP 狀態碼會出錯 (因為 `toString()` 被我修改了)；猜錯的話就進不去 if
-   ( step 2 強調 if 判斷等價 `FLAG[profile.name.length] === profile.bio[profile.name.length]`)
-
-<br />
-
-- 當然，這與 JS 的屬性有關聯， JS 物件原型鍊的 `toString()` 來自 `Object.prototype.toString` ，但是
-  我如果把這個物件加上 `toString()=x` 屬性值， Node.js v8 引擎就會先採用我加上的這個屬性值 `x`
-- 所以我可以對 `/` 做 GET 請求的同時， query string 使用 `?setdown=1&setdomn[toString]=x` ，這樣就
-  能完美符合 side-channel attack 的條件
-
-<AlertBlockquote type="info" title="注意 setdown 和 setdomn 是不一樣的" />
-
-![image](@assets/blog-images/2026/tsc/profile-page-pro/setdown-and-setdomn.png)
-
-&emsp;
-
-6. 所以，針對 step 5 能夠寫出以下的 script
+6. 所以，針對 step 4 和 5 能夠寫出以下的 script
 
 <Details summary="解題 script 做 side-channel attack 的主要邏輯">
 
@@ -273,7 +301,7 @@ for i in range(len(KNOWN_FLAG), 50):
 
 - 回去確認一下，題目說明有明確告知 flag 的格式，所以不需要猜所有的 printable ASCII code ，把 charset
   改成 <br />
-  `charset = "etaoinshrdlcumwfgypbvkjxqz_0123456789}"`
+  `charset = "etaoinshrdlcumwfgypbvkjxqz_0123456789}"` ，這段是按照字母出現頻率排序的，實際就是包含所有小寫字母即可
 
 ![image](@assets/blog-images/2026/tsc/profile-page-pro/question-desc.png)
 
@@ -346,15 +374,15 @@ def reset_instance():
 
 - 先使用已知的 flag prefix 確定 script 能夠正確運作
 
-![image full](@assets/blog-images/2026/tsc/profile-page-pro/proof-of-script-work.png)
+![image](@assets/blog-images/2026/tsc/profile-page-pro/proof-of-script-work.png)
 
 &emsp;
 
 8. 一些過程以及最終 flag 內容
 
-![image full](@assets/blog-images/2026/tsc/profile-page-pro/solving-process.png)
+![image](@assets/blog-images/2026/tsc/profile-page-pro/solving-process.png)
 
-![image full](@assets/blog-images/2026/tsc/profile-page-pro/flag.png)
+![image](@assets/blog-images/2026/tsc/profile-page-pro/flag.png)
 
 - **flag🚩 : `TSC{t1m3_is_n0n3y_}`**
 

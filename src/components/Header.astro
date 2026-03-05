@@ -168,6 +168,7 @@ const sortedPosts = posts.sort(
 
       object-fit: cover;
       // 中心向右靠一點，避免寬度縮減裁切掉 banner 主角
+      // 桌機預設
       object-position: 70% center;
 
       transition: 0.3s;
@@ -180,6 +181,11 @@ const sortedPosts = posts.sort(
 
       @media screen and (max-width: 767px) {
         height: 100%;
+      }
+
+      // 用來控制手機版本 banner 的中心點，避免 banner 角色被裁切
+      @media screen and (max-width: 767px) and (hover: none) and (pointer: coarse) {
+        object-position: 50% center;
       }
     }
   }

@@ -16,9 +16,7 @@
 ---
 
 - 代辦事項：
-  - 所有 tag 的 tag 沒有做 i18n
   - PreLoadering 動畫不管是否載入完成，均有最短時間
-  - Footer 的畫筆、咖啡杯、瀏覽量及訪客量需要修正
   - 麵包屑導航 (可略)
 
 本主题是 [hexo-theme-reimu](https://github.com/D-Sketon/hexo-theme-reimu) 的 Astro 移植版本，一款博丽灵梦风格的 Astro 主题。
