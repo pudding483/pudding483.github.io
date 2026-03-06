@@ -190,6 +190,12 @@ export default {
       desc: "Pentest Learner",
       avatar: "/images/friend-avatars/dkri3c1.webp",
     },
+    {
+      name: "M4RVjN",
+      url: "https://m4rvjn.github.io/",
+      desc: "",
+      avatar: "",
+    },
   ],
 
   copyright: {

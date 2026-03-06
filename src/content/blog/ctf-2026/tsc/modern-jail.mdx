@@ -23,19 +23,17 @@ import Details from "@/components/mdx/Details.astro";
 
 ## <Color c="red-0">解題過程</Color>
 
-1. 從 `server.lua` 中我們能發現 `load(code, "user", "t", env)` ，把送出的 body 當 Lua 程式
-   執行所以這是一題 jailbreak ，同時 docker file 有寫這題用的是 OpenResty ， OpenResty
-   為了隔離請求，會使用一個獨立的環境 table
+1. 從 `server.lua` 中我們能發現 `load(code, "user", "t", env)` ，伺服器把 POST body 當 Lua chunk
+   執行，這是一題 Lua jailbreak 。其中「獨立環境 table」是題目作者透過 load function 的第四個參數 env 明確指定的
 
 ![image](@assets/blog-images/2026/tsc/modern-jail/verify-main-logic.png)
 ![image](@assets/blog-images/2026/tsc/modern-jail/how-execute-work.png)
-![image](@assets/blog-images/2026/tsc/modern-jail/docker-file.png)
 
 &emsp;
 
 2. Code audit ，仔細查看會發現，在真正 load 之前，有經過 `build_safe_env()`
    ，這個函式前面定義了很多變數，目的是為了做到清除像是 string 對於 table 內敏感元素的關聯，所以定義了
-   `safe_string` 這個新的 table ，用來用來取代完整的原生 string 模組。因為這是在 OpenResty
+   `safe_string` 這個新的 table ，用來用來取代完整的原生 string 模組。因為這是在 `load(code, "user", "t", env)`
    環境，透過複製了特定安全函式的 reference ，清空原本環境裡面的<Color c="blue-3">參考綁定</Color>，防止攻擊者透過
    Table 屬性遍歷去存取到不在白名單內的危險欄位(函式、元素)
 
@@ -73,14 +71,19 @@ local function execute(code)
   package = nil
   dofile = nil
   loadfile = nil
-...
+  ...
+
+  local env = build_safe_env()
+	local fn, err = load(code, "user", "t", env)
+
+  ...
 end
 ```
 
 &emsp;
 
 3. 那麼問題出在哪裡呢？真正的問題點在於 `setmetatable` 這個 table 裡面的 `__index` ，這個 metamethod
-   (元方法)的觸發時機是<Color c="red-0">當讀取了一個不存在的屬性</Color> ，就會執行後續的函式
+   (元方法)的觸發時機是<Color c="red-0">當讀取了一個不存在的屬性</Color> ，就會執行後續的函式，在這裡就是
    `function(_, k) return rawget(_G, k) end`
 
 {/* prettier-ignore */}
@@ -115,10 +118,11 @@ end
 
 &emsp;
 
-4. 關鍵是 `function(_, k)` 的內容，直接回傳了 `rawget(_G, k)` 的結果，而 `rawget(_G, k)` 會去找 `_G`
-   這個 table 底下的 index `k` ，如果沒有就會直接回傳 nil 。但是通過步驟 2
-   我們知道，真正的危險欄位(這裡是 `_G` )並沒有被清除，題目的寫法只是清除了參考綁定，而透過步驟 3
-   ，我們就能夠利用 `__index` 的 fallback 機制，拿到真正的 `_G`
+4. 關鍵是 OpenResty 為了防止併發請求互相污染，會為每個 HTTP Request 建立一個「專屬的子環境表」，並且透過 `__index`
+   繼承底層真正的全域表。題目的 execute 函式其實是跑在這個「子環境」中。因此，當程式執行 `_G = nil`
+   時，他只是在當前 Request 的空表中設定了一個無效的 nil ，底層的全域表 `_G` 依然完好無缺。當執行 `rawget(_G, k)`
+   並觸發 `__index` 時， Lua 引擎會解析 table 底下的 index `k` ，發現當前子環境找不到 (因為被設為 nil了) ，就會利用環境表的
+   fallback 機制，拿到底層的環境變數 `_G`
 
 ```lua
 function(_, k)
@@ -133,10 +137,15 @@ end,
   Functions](https://www.lua.org/manual/5.1/manual.html#5.1)
 </AlertBlockquote>
 
-最終 payload :
+![image](@assets/blog-images/2026/tsc/modern-jail/docker-file.png)
+![image full](@assets/blog-images/2026/tsc/modern-jail/check-global-var.png)
+
+&emsp;
+
+5. 最後就可以透過環境變數 `_G` ，拿到危險函數，並執行最終 payload :
 
 ```lua
-return _G["re".."quire"]("i".."o").open("/fl".."ag"):read("*a")
+payload : return _G["re".."quire"]("i".."o").open("/fl".."ag"):read("*a")
 ```
 
 ![image full](@assets/blog-images/2026/tsc/modern-jail/flag.png)
