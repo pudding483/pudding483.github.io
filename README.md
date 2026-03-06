@@ -18,6 +18,8 @@
 - 代辦事項：
   - PreLoadering 動畫不管是否載入完成，均有最短時間
   - 麵包屑導航 (可略)
+  - 為甚麼要建這個 blog => 放在關於
+  - 除了 writeup 其他類別的文章
 
 本主题是 [hexo-theme-reimu](https://github.com/D-Sketon/hexo-theme-reimu) 的 Astro 移植版本，一款博丽灵梦风格的 Astro 主题。
 
