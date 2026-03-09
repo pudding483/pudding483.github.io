@@ -23,7 +23,203 @@ import Details from "@/components/mdx/Details.astro";
 
 ## <Color c="red-0">解題過程</Color>
 
-1. 首先跟進到題目網頁，
+1. 首先跟進到題目網頁，看起來有 5 個主要功能顯示在 nav-bar 上面， Login / Register
+   的功能一目了然，所以先看一下 Users 和 Models 分別在做什麼。從 Users 的 interface
+   進入，會看到 admin 的帳號，然後看看 Show models 會發現 admin 有一個 ResNet-18
+   的 model ，看起來要登入才能下載。 Models 的 api 一樣會顯示 models ，多了敘述
+
+![image full](@assets/blog-images/2026/tsc/thinking-face/website.png)
+![image full](@assets/blog-images/2026/tsc/thinking-face/users-show-models.png)
+![image full](@assets/blog-images/2026/tsc/thinking-face/models-api.png)
+
+&emsp;
+
+2. 大致上未登入時能看的內容差不多看完了，所以先隨便註冊一個一般帳號，看看有沒有其他訊息可以利用，
+   register 並 login 之後，會發現 nav-bar 多了一個 My Models 的欄位，那麼理論上應該要有 upload
+   api ，但是並沒有從網頁上找到。在 step1 有看到 Users 的 apu 裡面有 admin 的 model
+   ，但是需要登入才能下載，現在已經登入了就可以下載看看，發現是 `.pth` 檔
+
+![image](@assets/blog-images/2026/tsc/thinking-face/register.png)
+![image](@assets/blog-images/2026/tsc/thinking-face/login.png)
+![image full](@assets/blog-images/2026/tsc/thinking-face/my-models-api.png)
+![image full](@assets/blog-images/2026/tsc/thinking-face/try-download-admin-model.png)
+![image](@assets/blog-images/2026/tsc/thinking-face/find-pth-format.png)
+
+&emsp;
+
+3. pth 檔通常是 PyTorch 的模型權重檔(在 AI 領域)，本質是二進為檔案，所以必須要透過像是
+   [netron.app](https://netron.app/) 這種開源模型檢視器才能打開。打開後直接找 flag
+   ，但是並有任何線索，都是模型的參數，所以問題不是出在檔案本身
+
+![image full](@assets/blog-images/2026/tsc/thinking-face/find-flag-in-model.png)
+
+&emsp;
+
+4. 網頁上的內容基本上都查詢完了，但是還有個疑問：上傳 model 的 api 沒有找到，所以進行
+   code audit ，從剛剛的<Color c="blue-3">註冊 / 登入</Color>看到<Color c="blue-3">下載
+   model / 上傳 model</Color>
+   - 從 `auth.py` (註冊 / 登入)開始看，針對 username 有做 `r'[^a-zA-Z0-9_\-]'`
+     的過濾，確認 username 裡面沒有除了 `a-z`, `A-Z`, `0-9`, `_`, `-`
+     以外的符號，基本上就不存在使用 path traversal 的空間(不能使用 `/`)
+
+   ```py
+   if action == 'register':
+       username = form.get('username')
+       password = form.get('password')
+
+       if not username or not password or len(username) > 64:
+           print()
+           print(json.dumps({'ok': False, 'error': 'Bad Parameters'}))
+       elif re.search(r'[^a-zA-Z0-9_\-]', username):
+           print()
+           print(json.dumps({'ok': False, 'error': 'Username should be in [a-zA-Z0-9_-]'}))
+       else:
+           success, msg = register_user(username, password)
+           owner_dir = os.path.join(MODELS_DIR, username)
+           os.makedirs(owner_dir, exist_ok=True)
+           print()
+           print(json.dumps({'ok': success, 'error': msg if not success else None}))
+   ```
+
+&emsp;
+
+5. 緊接著檢查控制 model 下載 / 上傳的 `models.py` ，在 `action == 'download'` 就能看到 `.pth`
+   檔的來源，仔細觀察 `action == 'upload'` 會發現，根本沒有針對權限的檢查。馬上去檢查前端，在
+   `app.js` 中可以看到， `user.privilege` $\geq$ `2` 才會顯示 upload 的 button
+   ，而一般使用者在註冊時， privilege 就固定是 1 (在 `db.py`) 。綜上，只有前端在做權限檢查，直接
+   call api 理論上就能夠上傳檔案了
+
+   ```py
+   elif action == 'download':
+    ...
+    else:
+        filepath = os.path.join(MODELS_DIR, f"{model['owner']}/{model['filename']}")
+        if not os.path.exists(filepath):
+            ...
+        else:
+            print("Content-Type: application/octet-stream")
+            print(f'Content-Disposition: attachment; filename="{model["name"]}.pth"')
+            print()
+            sys.stdout.flush()
+            with open(filepath, 'rb') as f:
+                sys.stdout.buffer.write(f.read())
+   ```
+
+   <Details summary="upload 的 api">
+
+   ```py
+   elif action == 'upload':
+    if not token or (user:= get_session_user(token)) is None:
+        print()
+        print(json.dumps({'ok': False, 'error': 'not authenticated'}))
+        exit(0)
+    form = get_http_form()
+    name = form['name'] if 'name' in form else None
+    description = form['description'] if 'description' in form else ''
+    file = form['file'] if 'file' in form else None
+
+    if name is None or file is None:
+        print()
+        print(json.dumps({'ok': False, 'error': 'bad parameters'}))
+    else:
+        new_filename = f"{gen_token()}.pth"
+        owner_id = int(user["uid"])
+        add_model_success, add_model_msg = add_model(name, description, new_filename, owner_id)
+        if not add_model_success:
+            print()
+            print(json.dumps({'ok': False, 'error': add_model_msg}))
+        else:
+            owner_dir = os.path.join(MODELS_DIR, user['username'])
+            os.makedirs(owner_dir, exist_ok=True)
+            filepath = os.path.join(owner_dir, new_filename)
+            with open(filepath, 'wb') as f:
+                f.write(file.file.read())
+            print()
+            print(json.dumps({'ok': True, 'message': 'model uploaded'}))
+   ```
+
+   </Details>
+
+   <Details summary="javascript 寫了前端會依據權限，顯示對應的 html">
+
+   ```js
+   function showMsg(m) {
+     const e = $("#msg");
+     if (e.length) e.text(m);
+     else alert(m);
+   }
+
+   function genNavbar() {
+     $(function () {
+       getMyInfo().then((user) => {
+         let username = user ? user.username : "Please Login";
+         let priv = user ? user.privilege : 0;
+
+         let navbarHtml = `
+               ...
+               `;
+         if (priv >= 1) {
+           navbarHtml += `
+                       <li class="nav-item"><a class="nav-link" href="my_models.html">My Models</a></li>
+                   `;
+         }
+         if (priv >= 2) {
+           navbarHtml += `
+                       <li class="nav-item"><a class="nav-link" href="upload.html">Upload</a></li>
+                   `;
+         }
+         if (priv == 0) {
+           navbarHtml += `
+                       <li class="nav-item"><a class="nav-link" href="login.html">Login</a></li>
+                       <li class="nav-item"><a class="nav-link" href="register.html">Register</a></li>
+                   `;
+         } else {
+           navbarHtml += `
+                       <li class="nav-item"><a class="nav-link" href="logout.html">Logout</a></li>
+                   `;
+         }
+         navbarHtml += `
+                   ...
+               `;
+
+         $(".navbar").append(navbarHtml);
+       });
+     });
+   }
+
+   async function getUserPrivilege() {
+     const resp = await getMyInfo()
+       .then((user) => {
+         if (user) return user.privilege;
+         else return 0;
+       })
+       .catch(() => {
+         return 0;
+       });
+     return resp;
+   }
+   ```
+
+   </Details>
+   - `dp.py` 的 register function
+
+   ```py
+   def register_user(username: str, password: str) -> tuple[bool, str]:
+       if username == None or password == None or len(username) > 64:
+           return (False, 'Bad Parameters')
+
+       try:
+           ...
+           cursor.execute('INSERT INTO users (username, password_hash, privilege) VALUES (?, ?, ?)',
+                         (username, hash_pw(password), 1))
+           ...
+   ```
+
+&emsp;
+
+6.
+
+最終 flag
 
 ![image full](@assets/blog-images/2026/tsc/thinking-face/flag.png)
 
