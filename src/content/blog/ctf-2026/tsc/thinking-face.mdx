@@ -87,7 +87,7 @@ import Details from "@/components/mdx/Details.astro";
    檔的來源，仔細觀察 `action == 'upload'` 會發現，根本沒有針對權限的檢查。馬上去檢查前端，在
    `app.js` 中可以看到， `user.privilege` $\geq$ `2` 才會顯示 upload 的 button
    ，而一般使用者在註冊時， privilege 就固定是 1 (在 `db.py`) 。綜上，只有前端在做權限檢查，直接
-   call api 理論上就能夠上傳檔案了
+   call api 理論上就能夠繞過前端的權限檢查，直接上傳檔案了
 
    ```py
    elif action == 'download':
@@ -201,6 +201,8 @@ import Details from "@/components/mdx/Details.astro";
    ```
 
    </Details>
+
+   {/* prettier-ignore */}
    - `dp.py` 的 register function
 
    ```py
@@ -217,7 +219,52 @@ import Details from "@/components/mdx/Details.astro";
 
 &emsp;
 
-6.
+6. 在知道能夠上傳檔案之後，還是要繼續看 source code ，在 `action == 'change_owner'`
+   這裡，能夠看到 `re.search(r'[^a-zA-Z0-9_\-/]', new_owner)` ，代表 new_owner
+   這個參數允許 `/` ，有可能可以做 path traversal ，而後面的語法又用到了 `shutil.move`
+   ，會把檔案從舊的 owner 的資料夾移動到新的 owner 的資料夾
+
+   {/* prettier-ignore */}
+   <AlertBlockquote type="info" title="shutil 相關">
+     全名 shell utilites (shell 實用工具，類似 python 內的檔案總管)\
+     `shutil.move(A, B)` ：其中 `A` 是舊的檔案路徑， `B` 是新的檔案路徑。把檔案從
+     `A` 路徑剪下並貼上到 `B` 路徑
+   </AlertBlockquote>
+
+   ```py
+   elif action == 'change_owner':
+       if not token or (user:= get_session_user(token)) is None:
+           print()
+           print(json.dumps({'ok': False, 'error': 'not authenticated'}))
+           exit(0)
+       model_id = qs.get('id', [''])[0]
+       new_owner = qs.get('new_owner', [''])[0]
+       if not model_id or not model_id.isdigit() or not new_owner or re.search(r'[^a-zA-Z0-9_\-/]', new_owner):
+           print()
+           print(json.dumps({'ok': False, 'error': 'bad parameters'}))
+           exit(0)
+       model = get_model(int(model_id))
+       if not model:
+           print()
+           print(json.dumps({'ok': False, 'error': 'model not found'}))
+       elif model['owner_id'] != user['uid']:
+           print()
+           print(json.dumps({'ok': False, 'error': 'this is not your model'}))
+       else:
+           success, msg = change_model_owner(int(model_id), new_owner)
+           shutil.move(os.path.join(MODELS_DIR, f"{model['owner']}/{model['filename']}"),
+                       os.path.join(MODELS_DIR, f"{new_owner}/{model['filename']}"))
+           print()
+           print(json.dumps({'ok': True, 'message': 'owner changed'}))
+   ```
+
+   - 經過 `curl -s -H "Cookie: session=$SESS" "$HOST/cgi-bin/users.py?action=getmyinfo"`
+     可以拿到自己的 uid ，接著再把針對 `users.py` 的 query string 改成 `?action=list&owner=2`
+     就能拿到自己上傳模型的 `id` 以及 `filename` ，用於驗證可以任意搬檔
+
+&emsp;
+
+7. 藉由 step5 和 step6 ，現在可以上傳任意 `pth` 檔，並且具有任意檔案移動的能力
 
 最終 flag
 

@@ -22,3 +22,7 @@ pnpm-debug.log*
 
 # local notes
 blog-codex.md
+
+# temp ignore CTF writeups
+src/assets/blog-images/2026/pico/
+src/content/blog/ctf-2026/pico/
