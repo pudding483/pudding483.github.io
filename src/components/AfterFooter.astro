@@ -59,7 +59,8 @@ const copyright = String.raw`
   import AOS from "@reimujs/aos";
   const aosInit = () => {
     AOS.init({
-      duration: 1000,
+      // duration 1000 在遠端會有卡頓，改成 500 試試看
+      duration: 500,
       easing: "ease",
       once: true,
       offset: 50,

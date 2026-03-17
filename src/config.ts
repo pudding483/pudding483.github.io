@@ -193,8 +193,14 @@ export default {
     {
       name: "M4RVjN",
       url: "https://m4rvjn.github.io/",
-      desc: "",
-      avatar: "",
+      desc: "CTF player",
+      avatar: "/images/friend-avatars/M4RVjN.webp",
+    },
+    {
+      name: "Penguin",
+      url: "https://lyccyc.github.io/",
+      desc: "CTF player | Weber | Pwner",
+      avatar: "/images/friend-avatars/Penguin.webp",
     },
   ],
 
